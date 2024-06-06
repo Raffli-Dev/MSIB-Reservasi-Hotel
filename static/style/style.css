@@ -1,6 +1,75 @@
 /* home style */
 body {
-font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.container-home {
+  display: flex;
+  align-items: flex-start;
+}
+
+.foto-home {
+  margin-top: 100px;
+  margin-left: 45px;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.foto-home > p {
+  text-align: center;
+  color: black;
+}
+
+.sec {
+  margin-top: 100px;
+  margin-left: 20px;
+  padding: 20px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sec h4 {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 3.5em;
+  margin-bottom: 10px;
+  color: black;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+.sec p {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 1em;
+  color: black;
+  opacity: 0;
+  transform: translateX(50px);
+  animation: fadeInRight 2s forwards 1s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .navbar-brand {
@@ -84,10 +153,16 @@ color: #000;
 }
 
 /* gallery */
-h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #333;
+.navbar-brand, h1 {
+  font-family: "Great Vibes", cursive;
+  font-weight: 800;
+  font-size: 18px;
+  font-style: normal;
+  }
+
+a {
+  font-family: "Edu TAS Beginner", cursive;
+  font-weight: 600;
   }
   
   .orange-line {
@@ -231,45 +306,9 @@ height: 100%;
   transform: scale(1.05);
 }
 
-.sec {
-  position: relative;
-  padding: 100px;
-  background: #1c0522;
-}
-
-.sec h2 {
-  font-size: 3.5em;
-  margin-bottom: 10px;
-  color: #fff;
-  opacity: 0; 
-  animation: fadeIn 2s forwards; 
-}
-
-.sec p {
-  font-size: 1em;
-  color: #fff;
-  opacity: 0; 
-  transform: translateX(50px); 
-  animation: fadeInRight 2s forwards 1s;
-}
-
-
-@keyframes fadeIn {
-  to {
-      opacity: 1;
-  }
-}
-
-
-@keyframes fadeInRight {
-  to {
-      opacity: 1; 
-      transform: translateX(0); 
-  }
-}
 
 .navbar-nav .nav-item {
-  margin: 0 10px; 
+  margin: 0 20px; 
 }
 
 .navbar-nav .nav-link {
@@ -331,3 +370,38 @@ height: 100%;
 .navbar-nav .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+/*sweet alert*/
+.swal2-footer .btn {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.3rem;
+  color: #fff;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.swal2-footer .btn:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.swal2-footer .btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.swal2-footer .btn:active {
+  background-color: #004085;
+  border-color: #003366;
+}
+

@@ -9,6 +9,14 @@
     <meta property="og:description" content="Hotel Telaga Mas " />
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Edu+TAS+Beginner:wght@400..700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -21,16 +29,19 @@
 <body>
     {% include 'user/home/header.html' %}
 
-    <div class="fluid">
-        <img src="{{ url_for('static', filename='img/wisata/sarangan1.jpg') }}" class="img-fluid w-100" alt="Deskripsi Gambar">
+    <!-- Homepage Awal -->
+    <!-- homepage awal -->
+    <div class="container-home">
+        <div class="foto-home">
+            <p>"Temukan pengalaman menginap yang tak terlupakan di Hotel Telaga Mas. Dengan pemandangan indah, fasilitas lengkap, dan pelayanan istimewa, kami siap menyambut Anda dengan hangat."</p>
+        </div>
+        <div class="sec">
+            <h4>Selamat Datang di Hotel megah dan mewah</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis vitae qui laborum laudantium dolores recusandae, voluptas quod, asperiores, libero nisi id odio quis mollitia rerum? Inventore perspiciatis fuga temporibus quaerat.</p>
+        </div>
     </div>
-
-    <!-- Caraosel -->
-    <div class="sec">
-        <h2>Selamat Datang di Hotel megah dan mewah</h2>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda aspernatur dolorem natus tempora cumque numquam porro in placeat est rerum recusandae reprehenderit ipsum velit, maiores asperiores. Fugiat laboriosam autem itaque.</p>
-    </div>  
-    <!-- End Caraosel -->
+    <!--End Homepage Awal-->
+    <!--End Homepage Awal -->
     <div class="container mt-5">
         <div class="card-deck">
             <div class="card">
