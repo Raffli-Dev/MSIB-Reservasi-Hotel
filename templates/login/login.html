@@ -56,11 +56,17 @@
             <div class="field">
                 <label class="label required-field">Kata Sandi</label>
                 <div class="control">
-                    <input class="input" type="password" name="password" placeholder="Masukkan kata sandi" />
+                    <input class="input" type="password" id="password" name="password" placeholder="Masukkan kata sandi" />
                 </div>
                 <p class="help is-danger">Kata Sandi wajib diisi</p>
             </div>
-
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" id="togglePassword"> Tampilkan Kata Sandi
+                    </label>
+                </div>
+            </div>
             <div class="field">
                 <div class="control">
                     <button type="submit" onclick="sign_in()" class="button is-primary">Login</button>
@@ -80,6 +86,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('#togglePassword').on('change', function () {
+                const passwordField = $('#password');
+                const type = $(this).is(':checked') ? 'text' : 'password';
+                passwordField.attr('type', type);
+            });
+
             $('#login-form').on('submit', function (event) {
                 event.preventDefault();
                 let isValid = true;

@@ -1,43 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Kamar - Hotel Telaga Mas</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Room - Hotel Telaga Mas</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'style/admin/css/style.css') }}">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/style/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
+
 <body>
     {% include 'admin/room/sidebar.html' %}
 
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Edit Kamar</div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ url_for('admin_edit_room', room_id=room['_id']) }}">
-                            <div class="form-group">
-                                <label for="room_type">Tipe Kamar:</label>
-                                <input type="text" class="form-control" id="room_type" name="room_type" value="{{ room.room_type }}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="date">Tanggal:</label>
-                                <input type="date" class="form-control" id="date" name="date" value="{{ room.date }}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="price">Harga:</label>
-                                <input type="number" class="form-control" id="price" name="price" value="{{ room.price }}" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </form>
-                    </div>
-                </div>
+        <h1 class="title">Edit Harga Kamar</h1>
+        
+        <form method="POST" action="{{ url_for('admin_edit_room', room_id=room['_id']) }}">
+            <div class="form-group">
+                <label for="roomType">Tipe Kamar</label>
+                <select class="form-control" id="roomType" name="roomType" required>
+                    <option value="Deluxe" {% if room.type == 'Deluxe' %}selected{% endif %}>Kamar Deluxe</option>
+                    <option value="Deluxe Family" {% if room.type == 'Deluxe Family' %}selected{% endif %}>Kamar Deluxe Family</option>
+                </select>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="date">Tanggal</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ room.date }}" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Stok Kamar</label>
+                <input type="number" class="form-control" id="stock" name="stock"  value="{{ room.stock }}" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Harga Normal</label>
+                <input type="number" class="form-control" id="price" name="price"  value="{{ room.price }}" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Harga Diskon</label>
+                <input type="number" class="form-control" id="discount_price"  name="discount_price"  value="{{ room.discount_price }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </form>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename = 'style/admin/js/main.js') }}"></script>
 </body>
+
 </html>

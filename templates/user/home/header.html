@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
     <h1>
-        <a class="navbar-brand" href="#">Hotel Telaga Mas</a>
+        <a class="navbar-brand" href="{{ url_for('user_index') }}"> Hotel Telaga Mas </a>
     </h1>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
         aria-expanded="false" aria-label="Toggle navigation">
@@ -12,10 +12,8 @@
                 <a class="nav-link active" href="{{ url_for('user_index') }}">Home</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Room & Suite
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="nav-link">Room & Suite</a>
+                <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ url_for('user_deluxe_room') }}">Deluxe Room</a>
                     <a class="dropdown-item" href="{{ url_for('user_deluxe_family') }}">Deluxe Family Room</a>
                 </div>
@@ -54,7 +52,3 @@
         </ul>
     </div>
 </nav>
-
-<!-- Tambahkan Bootstrap JavaScript -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

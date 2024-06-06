@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from pymongo import MongoClient
 import os
@@ -7,6 +8,10 @@ import hashlib
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
+import base64
+import time
+import logging
+
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -271,10 +276,107 @@ def user_reservasi():
 @app.route('/user/book', methods=['GET'])
 def user_book():
     user_info = get_user_info()
+    check_in_date = request.args.get('check_in_date')
+    if not check_in_date:
+        check_in_date = datetime.today().strftime('%Y-%m-%d')
+    
+    deluxe_room = db.room_prices.find_one({"date": check_in_date, "room_type": "Deluxe"})
+    deluxe_family_room = db.room_prices.find_one({"date": check_in_date, "room_type": "Deluxe Family"})
+    
+    return render_template('user/book/book.html', user_info=user_info, deluxe_room=deluxe_room, deluxe_family_room=deluxe_family_room)
+
+@app.route('/user/room/booking/deluxe-room', methods=['GET', 'POST'])
+def user_deluxe_book():
+    user_info = get_user_info()
+    
+    # Mendapatkan tanggal check-in dari query parameter atau default ke tanggal hari ini
+    check_in_date_str = request.args.get('check_in_date', datetime.today().strftime('%Y-%m-%d'))
+    check_in_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+    
+    # Mendapatkan harga dari query parameter atau default ke 0 dan mengubahnya menjadi float
+    harga_normal = float(request.args.get('harga_normal', '0'))
+    harga_diskon = float(request.args.get('harga_diskon', '0'))
+    
+    # Lama menginap default adalah 1 malam
+    lama_inap = int(request.args.get('lamaInap', '1'))
+    
+    # Tanggal check-out dihitung dari tanggal check-in + lama menginap
+    check_out_date = check_in_date + timedelta(days=lama_inap)
+    
+    # Format tanggal check-in dan check-out untuk ditampilkan
+    check_in_date_display_str = check_in_date.strftime('%a, %d %b %Y')
+    check_out_date_display_str = check_out_date.strftime('%a, %d %b %Y Sebelum 12:00')
+
     if user_info:
-        return render_template('user/book/book.html', user_info=user_info)
+        return render_template(
+            'user/book/deluxe_book.html', 
+            user_info=user_info, 
+            check_in_date_display=check_in_date_display_str,  # Tanggal untuk tampilan
+            check_in_date=check_in_date_str,  # Tanggal untuk perhitungan
+            check_out_date=check_out_date_display_str,
+            harga_normal=harga_normal, 
+            harga_diskon=harga_diskon, 
+            lama_inap=lama_inap
+        )
     else:
         return redirect(url_for('login'))
+
+
+    
+@app.route('/user/room/booking/family-deluxe-room', methods=['GET', 'POST'])
+def user_family_deluxe_book():
+    user_info = get_user_info()
+    if user_info:
+        return render_template('user/book/family_deluxe_book.html', user_info=user_info)
+    else:
+        return redirect(url_for('login'))
+
+
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)
+
+@app.route('/get_token', methods=['POST'])
+def get_token():
+    # Ambil data dari request
+    data = request.json
+
+    # Data yang akan dikirim ke Midtrans untuk mendapatkan token
+    payload = {
+        "transaction_details": {
+            "order_id": "order-id-test-" + str(int(time.time())),
+            "gross_amount": 500000
+        },
+        "customer_details": {
+            "first_name": data['namaLengkap'],
+            "email": data['email'],
+            "phone": data['nomorHandphone']
+        }
+    }
+
+    # Headers untuk otentikasi dengan Midtrans
+    server_key = 'SB-Mid-server-Q0z2rAvW5dziFzMoTBMlnh05'  # Ganti dengan server key sandbox Anda
+    auth_str = server_key + ':'
+    auth_bytes = auth_str.encode('utf-8')
+    auth_base64 = base64.b64encode(auth_bytes).decode('utf-8')
+
+    headers = {
+        'Authorization': 'Basic ' + auth_base64,
+        'Content-Type': 'application/json'
+    }
+
+    # Kirim request ke Midtrans
+    url = 'https://app.sandbox.midtrans.com/snap/v1/transactions'
+
+    response = requests.post(url, headers=headers, json=payload)
+
+    logging.debug('Response status code: %s', response.status_code)
+    logging.debug('Response body: %s', response.text)
+
+    if response.status_code == 201:
+        token = response.json().get('token')
+        return jsonify({'token': token})
+    else:
+        return jsonify({'error': response.json()}), response.status_code
 
 @app.route('/logout')
 def logout():
@@ -516,14 +618,104 @@ def admin_upload_user_photo(user_id):
     else:
         return redirect(url_for('login_admin'))
 
+@app.route('/admin/room/edit/<room_id>', methods=['GET', 'POST'])
+def admin_edit_room(room_id):
+    if 'logged_in' in session:
+        admin_info = get_admin_info()
+        room = db.room_prices.find_one({'_id': ObjectId(room_id)})
+
+        if request.method == 'POST':
+            room_type = request.form.get('roomType')
+            date = request.form.get('date')
+            normal_price = request.form.get('price')
+            stock = request.form.get('stock')
+            discount_price = request.form.get('discount_price')
+
+            db.room_prices.update_one(
+                {'_id': ObjectId(room_id)},
+                {'$set': {
+                    'type': room_type,
+                    'date': date,
+                    'price': normal_price,
+                    'discount_price': discount_price,
+                    'stock': stock
+                }}
+            )
+            return redirect(url_for('admin_room'))
+
+        return render_template('admin/room/edit_room.html', admin_info=admin_info, room=room)
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/admin/room/delete', methods=['POST'])
+def admin_delete_room():
+    room_id = request.form.get('room_id')
+    if room_id:
+        result = db.room_prices.delete_one({'_id': ObjectId(room_id)})
+        if result.deleted_count > 0:
+            return jsonify({'result': 'success'})
+        else:
+            return jsonify({'result': 'error', 'msg': 'Gagal menghapus kamar.'})
+    return jsonify({'result': 'error', 'msg': 'ID kamar tidak valid.'})
+
+@app.route('/admin/bulk_delete_rooms', methods=['POST'])
+def admin_bulk_delete_rooms():
+    room_ids = request.form.getlist('room_ids[]')
+    if room_ids:
+        object_ids = [ObjectId(room_id) for room_id in room_ids]
+        result = db.room_prices.delete_many({'_id': {'$in': object_ids}})
+        if result.deleted_count > 0:
+            return jsonify({'result': 'success'})
+        else:
+            return jsonify({'result': 'error', 'msg': 'Gagal menghapus kamar.'})
+    return jsonify({'result': 'error', 'msg': 'Tidak ada ID kamar yang valid.'})
 
 @app.route('/admin/rooms', methods=['GET'])
 def admin_room():
     admin_info = get_admin_info()
     if admin_info:
-        return render_template('admin/room/room.html', admin_info=admin_info)
+        search_query = request.args.get('search')
+        per_page = 5
+        page = int(request.args.get('page', 1))
+        
+        if search_query:
+            rooms = list(db.room_prices.find({'type': {'$regex': search_query, '$options': 'i'}}).skip((page - 1) * per_page).limit(per_page))
+            total_rooms = db.room_prices.count_documents({'type': {'$regex': search_query, '$options': 'i'}})
+        else:
+            rooms = list(db.room_prices.find().skip((page - 1) * per_page).limit(per_page))
+            total_rooms = db.room_prices.count_documents({})
+        
+        total_pages = (total_rooms + per_page - 1) // per_page
+        return render_template('admin/room/room.html', rooms=rooms, admin_info=admin_info, page=page, total_pages=total_pages, total_rooms=total_rooms)
     else:
         return redirect(url_for('login_admin'))
+
+@app.route('/admin/room/add', methods=['GET', 'POST'])
+def admin_add_room():
+    if 'logged_in' in session:
+        admin_info = get_admin_info()
+        
+        if request.method == 'POST':
+            room_type = request.form.get('roomType')
+            date = request.form.get('date')
+            normal_price = request.form.get('price')
+            stock = request.form.get('stock')
+            discount_price = request.form.get('discount_price')
+
+            new_room = {
+                'room_type': room_type,
+                'date': date,
+                'price': normal_price,
+                'discount_price': discount_price,
+                'stock': stock
+            }
+            db.room_prices.insert_one(new_room)
+            return redirect(url_for('admin_room'))
+        
+        return render_template('admin/room/add_room.html', admin_info=admin_info)
+    else:
+        return redirect(url_for('login_admin'))
+
 
 @app.route('/admin/guest', methods=['GET'])
 def admin_guest():

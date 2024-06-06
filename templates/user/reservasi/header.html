@@ -1,21 +1,19 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
     <h1>
-        <a class="navbar-brand" href="#">Hotel Telaga Mas</a>
+        <a class="navbar-brand" href="{{ url_for('user_index') }}"> Hotel Telaga Mas </a>
     </h1>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-        <ul class="navbar-nav mt-2 mb-2">
+        <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link active" href="{{ url_for('user_index') }}">Home</a>
+                <a class="nav-link" href="{{ url_for('user_index') }}">Home</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Room & Suite
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="nav-link">Room & Suite</a>
+                <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ url_for('user_deluxe_room') }}">Deluxe Room</a>
                     <a class="dropdown-item" href="{{ url_for('user_deluxe_family') }}">Deluxe Family Room</a>
                 </div>
@@ -32,13 +30,13 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if user_info %}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle active" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ user_info.full_name }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="userDropdown">
                     <a class="dropdown-item" href="{{ url_for('user_profile') }}">Profile</a>
-                    <a class="dropdown-item" href="{{ url_for('user_reservasi') }}">Reservation History</a>
+                    <a class="dropdown-item actiev" href="{{ url_for('user_reservasi') }}">Reservation History</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
                 </div>
@@ -54,7 +52,3 @@
         </ul>
     </div>
 </nav>
-
-<!-- Tambahkan Bootstrap JavaScript -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

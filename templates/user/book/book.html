@@ -18,74 +18,6 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        .container {
-            margin-top: 10px;
-        }
-
-        .room-card {
-            border: 1px solid #e3e3e3;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .carousel-item {
-            height: 270px;
-        }
-
-        .table {
-            margin-top: 55px;
-        }
-
-        .up {
-            margin-top: -20px;
-        }
-
-        .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-
-        .room-card img {
-            width: 100%;
-            height: auto;
-        }
-
-        .room-details {
-            padding: 15px;
-        }
-
-        .room-details .badge {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .price {
-            font-size: 1.25em;
-            color: #d9534f;
-        }
-
-        .original-price {
-            text-decoration: line-through;
-            color: #6c757d;
-        }
-
-        .discount {
-            color: #d9534f;
-        }
-
-        .table td,
-        .table th {
-            vertical-align: middle;
-        }
-
-        .btn-pilih {
-            width: 100%;
-        }
-    </style>
 </head>
 
 <body>
@@ -94,17 +26,17 @@
         <div class="row">
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <form>
+                    <form method="get" action="/user/book">
                         <div class="form-row align-items-center">
                             <div class="col-auto">
                                 <label for="checkInDate" class="col-form-label">Check-In</label>
                             </div>
                             <div class="col-auto">
-                                <input type="date" class="form-control mb-2" id="checkInDate"
+                                <input type="date" class="form-control mb-2" id="checkInDate" name="check_in_date"
                                     placeholder="Tanggal Check-In">
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-primary mb-2">Cari</button>
+                                <button type="submit" class="btn btn-primary mb-2">Cari</button>
                             </div>
                         </div>
                     </form>
@@ -114,75 +46,7 @@
                 <div class="room-card">
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                            <div class="room-details">
-                                <h4 class="card-title">Deluxe Room</h4>
-                                <div id="roomCarousel" class="carousel slide" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                        <li data-target="#roomCarousel" data-slide-to="0" class="active"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="1"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="2"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="3"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="4"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="5"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="6"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="7"></li>
-                                    </ol>
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe1.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe2.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe3.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe4.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe5.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe6.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/deluxe/kamar-deluxe7.jpg" class="d-block w-100"
-                                                alt="Deluxe Room">
-                                        </div>
-                                    </div>
-                                    <a class="carousel-control-prev" href="#roomCarousel" role="button"
-                                        data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#roomCarousel" role="button"
-                                        data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="room-details up">
-                                <div class="badge badge-primary text-center">Harga terbaik untuk kamar dengan shower dan balkon
-                                </div>
-                                <p>24.0 m<sup>2</sup></p>
-                                <p><i class="fas fa-smoking-ban"></i> Bebas Asap Rokok</p>
-                                <p><i class="fas fa-shower"></i> Shower</p>
-                                <p><i class="fas fa-building"></i> Balkon / Teras</p>
-                                <a href="#" class="btn btn-link" data-toggle="modal"
-                                    data-target="#roomDetailModal">Lihat Detail Kamar</a>
-                            </div>
+                            {% include 'user/book/deluxe_room_details.html' %}
                         </div>
                         <div class="col-md-8 table">
                             <table class="table table-bordered mt-4">
@@ -206,81 +70,38 @@
                                             <i class="fas fa-user"></i>
                                             <i class="fas fa-user"></i>
                                         </td>
+                                        <!-- bagian ini dalam kolom Harga/kamar/malam di bagian Deluxe Room -->
                                         <td>
-                                            <p class="original-price">Rp 550.000</p>
-                                            <p class="price">Rp 413.000</p>
+                                            {% if deluxe_room %}
+                                            <p class="original-price">Price: Rp {{ deluxe_room . price }}</p>
+                                            <p class="price">Price: Rp {{ deluxe_room . discount_price }}</p>
                                             <p>Di luar pajak & biaya</p>
+                                            {% else %}
+                                            <p>Tidak ada kamar tersedia untuk tanggal ini.</p>
+                                            {% endif %}
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-pilih">Pilih</button>
+                                            {% if deluxe_room %}
+                                            <a href="{{ url_for('user_deluxe_book', check_in_date = request . args . get('check_in_date'), harga_diskon = deluxe_room . discount_price, harga_normal = deluxe_room . price) }}"
+                                                class="btn btn-primary btn-pilih">Pilih</a>
+                                            {% else %}
+                                            <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
+                                            {% endif %}
                                         </td>
-                                    </tr
+
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
             <div class="col-lg-12">
                 <div class="room-card">
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                            <div class="room-details">
-                                <h4 class="card-title">Deluxe Family</h4>
-                                <div id="FamilyroomCarousel" class="carousel slide" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                        <li data-target="#roomCarousel" data-slide-to="0" class="active"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="1"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="2"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="3"></li>
-                                        <li data-target="#roomCarousel" data-slide-to="4"></li>
-                                    </ol>
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img src="../static/img/room/family-deluxe/deluxe-family.jpg"
-                                                class="d-block w-100" alt="Deluxe Family Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/family-deluxe/deluxe-family1.jpg"
-                                                class="d-block w-100" alt="Deluxe Family Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/family-deluxe/deluxe-family2.jpg"
-                                                class="d-block w-100" alt="Deluxe Family Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/family-deluxe/deluxe-family3.jpg"
-                                                class="d-block w-100" alt="Deluxe Family Room">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../static/img/room/family-deluxe/deluxe-family4.jpg"
-                                                class="d-block w-100" alt="Deluxe Family Room">
-                                        </div>
-                                    </div>
-                                    <a class="carousel-control-prev" href="#FamilyroomCarousel" role="button"
-                                        data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#FamilyroomCarousel" role="button"
-                                        data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="room-details up">
-                                <div class="badge badge-primary text-center">Harga terbaik untuk kamar dengan Bathtub
-                                </div>
-                                <p>18.0 m<sup>2</sup></p>
-                                <p><i class="fas fa-smoking-ban"></i> Bebas Asap Rokok</p>
-                                <p><i class="fas fa-bath"></i> Bathtub</p>
-                                <a href="#" class="btn btn-link" data-toggle="modal"
-                                    data-target="#familyroomDetailModal">Lihat Detail Kamar</a>
-                            </div>
+                            {% include 'user/book/family_deluxe_room_details.html' %}
                         </div>
                         <div class="col-md-8 table">
                             <table class="table table-bordered mt-4">
@@ -306,12 +127,21 @@
                                             <i class="fas fa-user"></i>
                                         </td>
                                         <td>
-                                            <p class="original-price">Rp 619.835</p>
-                                            <p class="price">Rp 557.851</p>
+                                            {% if deluxe_family_room %}
+                                            <p id="original-price" class="original-price">Price: Rp {{ deluxe_family_room . price }}</p>
+                                            <p id="price" class="price">Price: Rp {{ deluxe_family_room . discount_price }}</p>
                                             <p>Di luar pajak & biaya</p>
+                                            {% else %}
+                                            <p>Tidak ada kamar tersedia untuk tanggal ini.</p>
+                                            {% endif %}
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-pilih">Pilih</button>
+                                            {% if deluxe_family_room %}
+                                            <a href="{{ url_for('user_family_deluxe_book') }}"
+                                                class="btn btn-primary btn-pilih">Pilih</a>
+                                            {% else %}
+                                            <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -321,205 +151,9 @@
                 </div>
             </div>
         </div>
-        <!-- Modal Detail Kamar -->
-        <div class="modal fade" id="roomDetailModal" tabindex="-1" role="dialog"
-            aria-labelledby="roomDetailModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="roomDetailModalLabel">Detail Kamar Deluxe</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="roomDetailCarousel" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                <li data-target="#roomDetailCarousel" data-slide-to="0" class="active"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="1"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="2"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="3"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="4"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="5"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="6"></li>
-                                <li data-target="#roomDetailCarousel" data-slide-to="7"></li>
-                            </ol>
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe1.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe2.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe3.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe4.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe5.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe6.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/deluxe/kamar-deluxe7.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#roomDetailCarousel" role="button"
-                                data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#roomDetailCarousel" role="button"
-                                data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                        <div class="room-details mt-4">
-                            <h4>Deskripsi Kamar</h4>
-                            <p>Deluxe Room ini menawarkan pengalaman menginap yang nyaman dengan fasilitas lengkap dan
-                                suasana yang mewah. Kamar dilengkapi dengan tempat tidur yang nyaman, shower,
-                                balkon/teras, dan bebas asap rokok. Nikmati pemandangan yang indah dan layanan terbaik
-                                yang kami tawarkan.</p>
-                            
-                            <h4>Fasilitas Kamar yang Mungkin Anda Suka</h4>
-                            <ul>
-                                <li> Shower</li>
-                                <li> Balkon / Teras</li>
-                            </ul>
-                            <h4>Fasilitas Kamar</h4>
-                            <ul>
-                                <li> Desk</li>
-                                <li> Balkon / Teras</li>
-                                <li> Televisi</li>
-                                <li> Pembuat kopi / teh</li>
-                            </ul>
-                            <h4>Perlengkapan Kamar Mandi</h4>
-                            <ul>
-                                <li> Kamar mandi pribadi</li>
-                                <li> Shower</li>
-                            </ul>
-                            <h4>Kebijakan Kamar</h4>
-                            <ul>
-                                <li>Check-in mulai pukul 14:00</li>
-                                <li>Check-out hingga pukul 12:00</li>
-                                <li>Anak-anak di bawah 12 tahun menginap gratis menggunakan tempat tidur yang ada</li>
-                                <li>Tempat tidur tambahan tersedia berdasarkan permintaan</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Pilih Kamar Ini</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'user/book/modal_room.html' %}
 
-        <div class="modal fade" id="familyroomDetailModal" tabindex="-1" role="dialog"
-            aria-labelledby="roomDetailModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="roomDetailModalLabel">Detail Family Deluxe</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="familyroomDetailCarousel" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                <li data-target="#familyroomDetailCarousel" data-slide-to="0" class="active"></li>
-                                <li data-target="#familyroomDetailCarousel" data-slide-to="1"></li>
-                                <li data-target="#familyroomDetailCarousel" data-slide-to="2"></li>
-                                <li data-target="#familyroomDetailCarousel" data-slide-to="3"></li>
-                                <li data-target="#familyroomDetailCarousel" data-slide-to="4"></li>
-                            </ol>
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="../static/img/room/family-deluxe/deluxe-family.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/family-deluxe/deluxe-family1.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/family-deluxe/deluxe-family2.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/family-deluxe/deluxe-family3.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="../static/img/room/family-deluxe/deluxe-family4.jpg" class="d-block w-100"
-                                        alt="Deluxe Family Room">
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#familyroomDetailCarousel" role="button"
-                                data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#familyroomDetailCarousel" role="button"
-                                data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                        <div class="room-details mt-4">
-                            <h4>Deskripsi Kamar</h4>
-                            <p>Family Deluxe Room ini menawarkan pengalaman menginap yang nyaman dengan fasilitas lengkap dan
-                                suasana yang mewah. Kamar dilengkapi dengan tempat tidur yang nyaman, bathtub,
-                                dan bebas asap rokok. Nikmati pemandangan yang indah dan layanan terbaik
-                                yang kami tawarkan.</p>
-                                <h4>Fasilitas Kamar yang Mungkin Anda Suka</h4>
-                                <ul>
-                                    <li> Bathtub</li>
-                                </ul>
-                                <h4>Fasilitas Kamar</h4>
-                                <ul>
-                                    <li> Desk</li>
-                                    <li> Televisi</li>
-                                </ul>
-                                <h4>Perlengkapan Kamar Mandi</h4>
-                                <ul>
-                                    <li> Kamar mandi pribadi</li>
-                                    <li> Shower</li>
-                                    <li> Bathtub</li>
-                                </ul>
-                            <h4>Kebijakan Kamar</h4>
-                            <ul>
-                                <li>Check-in mulai pukul 14:00</li>
-                                <li>Check-out hingga pukul 12:00</li>
-                                <li>Anak-anak di bawah 12 tahun menginap gratis menggunakan tempat tidur yang ada</li>
-                                <li>Tempat tidur tambahan tersedia berdasarkan permintaan</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Pilih Kamar Ini</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-
-
     {% include 'footer/footer.html' %}
 
     <!-- Font Awesome -->
@@ -527,6 +161,19 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var hargaNormal = {{ deluxe_room . price }};
+            var hargaDiskon = {{ deluxe_room . discount_price }};
+            var hargaNormal_family = {{ deluxe_family_room . price }};
+            var hargaDiskon_family = {{ deluxe_family_room . discount_price }};
+
+            document.querySelector('.original-price').innerText = 'Rp ' + hargaNormal.toLocaleString('id-ID');
+            document.querySelector('.price').innerText = 'Rp ' + hargaDiskon.toLocaleString('id-ID');
+            document.querySelector('#original-price').innerText = 'Rp ' + hargaNormal_family.toLocaleString('id-ID');
+            document.querySelector('#price').innerText = 'Rp ' + hargaDiskon_family.toLocaleString('id-ID');
+        });
+    </script>
 </body>
 
 </html>

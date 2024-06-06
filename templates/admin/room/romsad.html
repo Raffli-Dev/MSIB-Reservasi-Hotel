@@ -65,9 +65,7 @@
                             </th>
                             <th>Tipe Kamar</th>
                             <th>Tanggal</th>
-                            <th>Stock Kamar</th>
-                            <th>Harga Normal</th>
-                            <th>Harga Diskon</th>
+                            <th>Harga</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -82,9 +80,7 @@
                             </td>
                             <td>{{ room.room_type }}</td>
                             <td>{{ room.date }}</td>
-                            <td>{{ room.stock }}</td>
                             <td>Rp. {{ room.price }}</td>
-                            <td>Rp. {{ room.discount_price }}</td>
                             <td>
                                 <a href="{{ url_for('admin_edit_room', room_id=room['_id']) }}" class="edit" data-toggle="tooltip" title="Edit"><i class="material-icons">&#xE254;</i></a>
                                 <a href="javascript:void(0);" class="delete" data-id="{{ room['_id'] }}"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>

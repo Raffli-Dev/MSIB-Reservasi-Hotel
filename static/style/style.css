@@ -331,3 +331,129 @@ height: 100%;
 .navbar-nav .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+.container {
+  margin-top: 10px;
+}
+
+.room-card {
+  border: 1px solid #e3e3e3;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.carousel-item {
+  height: 270px;
+}
+
+.table {
+  margin-top: 55px;
+}
+
+.up {
+  margin-top: -20px;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.room-card img {
+  width: 100%;
+  height: auto;
+}
+
+.room-details {
+  padding: 15px;
+}
+
+.room-details .badge {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 1.25em;
+  color: #d9534f;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.discount {
+  color: #d9534f;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.btn-pilih {
+  width: 100%;
+}
+
+ .booking-header {
+            margin-bottom: 20px;
+        }
+
+        .booking-section {
+            margin-bottom: 20px;
+        }
+
+        .hotel-info-card,
+        .form-card,
+        .price-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f8f8;
+            margin-bottom: 20px;
+        }
+
+        .hotel-info-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .discounted-price {
+            text-decoration: line-through;
+            color: red;
+        }
+
+        .total-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        .form-check-label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-group .form-check {
+            flex: 1 1 45%;
+            min-width: 200px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .required-warning {
+            color: red;
+            font-size: 12px;
+        }
