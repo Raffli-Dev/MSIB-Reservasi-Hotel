@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Telaga Mas</title>
+    <meta property="og:title" content="Reservasi Hotel Telaga Mas" />
+    <meta property="og:description" content="Hotel Telaga Mas " />
+    <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/style/style.css">
+
+    <style>
+        .booking-header {
+            margin-bottom: 20px;
+        }
+
+        .booking-section {
+            margin-bottom: 20px;
+        }
+
+        .hotel-info-card,
+        .form-card,
+        .price-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f8f8;
+            margin-bottom: 20px;
+        }
+
+        .hotel-info-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .discounted-price {
+            text-decoration: line-through;
+            color: red;
+        }
+
+        .total-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        .form-check-label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-group .form-check {
+            flex: 1 1 45%;
+            min-width: 200px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .required-warning {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'user/book/header.html' %}
+
+    <div class="container booking-container mt-5">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-card">
+                    <h4>Data Pemesan</h4>
+                    <p>Isi semua kolom dengan benar untuk memastikan kamu dapat menerima voucher konfirmasi pemesanan di email yang dicantumkan.</p>
+
+                    <form>
+                        <div class="form-group">
+                            <label for="namaLengkap">Nama Lengkap</label>
+                            <input type="text" class="form-control" id="namaLengkap" placeholder="Nama Lengkap" value="{{ user_info.full_name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Email" value="{{ user_info.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="nomorHandphone">Nomor Handphone</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <select class="form-control" id="countryCode">
+                                        <option value="+62">+62</option>
+                                    </select>
+                                </div>
+                                <input type="text" class="form-control" id="nomorHandphone" placeholder="Nomor Handphone" value="{{ user_info.phone_number }}">
+                            </div>
+                            <span>Contoh: +62812345678, untuk Kode Negara (+62) dan No. Handphone 081234567</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Pesanan untuk:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="pesananUntuk" id="sameAsBooker" value="same" checked>
+                                <label class="form-check-label" for="sameAsBooker">
+                                    Sama dengan pemesan
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="pesananUntuk" id="bookForOthers" value="others">
+                                <label class="form-check-label" for="bookForOthers">
+                                    Saya memesan untuk orang lain
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="guestNameField" class="form-group hidden">
+                            <label for="guestName">Nama Lengkap Tamu</label>
+                            <input type="text" class="form-control" id="guestName" placeholder="Nama Lengkap Tamu">
+                            <small>Masukkan nama tamu yang akan menginap di akomodasi</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lamaInap">Lama Menginap</label>
+                            <select class="form-control" id="lamaInap" name="lamaInap">
+                                {% for i in range(1, 15) %}
+                                    <option value="{{ i }}" {% if i == lama_inap %}selected{% endif %}>{{ i }} Malam</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="form-card">
+                    <h4>Beri tahu di sini jika ada permintaan khusus</h4>
+                    <p>Ketersediaan permintaanmu akan diinformasikan pada waktu check-in. Biaya tambahan mungkin akan dikenakan tapi kamu masih bisa membatalkannya nanti.</p>
+
+                    <div class="checkbox-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="nonSmokingRoom" value="nonSmokingRoom">
+                            <label class="form-check-label" for="nonSmokingRoom">Kamar Bebas Asap Rokok</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="connectingRoom" value="connectingRoom">
+                            <label class="form-check-label" for="connectingRoom">Kamar dengan Pintu Penghubung</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="highFloor" value="highFloor">
+                            <label class="form-check-label" for="highFloor">Lantai Atas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="bedType" value="bedType">
+                            <label class="form-check-label" for="bedType">Tipe Ranjang</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkInTime" value="checkInTime">
+                            <label class="form-check-label" for="checkInTime">Waktu check-in</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkOutTime" value="checkOutTime">
+                            <label class="form-check-label" for="checkOutTime">Waktu check-out</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="others" value="others">
+                            <label class="form-check-label" for="others">Lainnya</label>
+                        </div>
+                    </div>
+
+                    <div id="othersDetails" class="hidden">
+                        <textarea class="form-control mt-3" id="othersText" rows="3" placeholder="Silakan isi permintaan khusus lainnya di sini..."></textarea>
+                        <small class="required-warning">Bagian ini wajib diisi</small>
+                    </div>
+                </div>
+
+                <div class="price-card">
+                    <h4>Rincian harga</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Harga Kamar</td>
+                            <td id="hargaKamar">Rp {{harga_diskon}}</td>
+                        </tr>
+                        <tr>
+                            <th>Harga Total</th>
+                            <th id="hargaTotal">Rp {{harga_diskon }}</th>
+                        </tr>
+                    </table>
+                    <p><i class="fa fa-info-circle"></i> Pesan sekarang sebelum harga berubah!</p>
+                    <button id="pay-button" class="btn btn-danger btn-block">Lanjut ke Pembayaran</button>
+                    <p class="text-center mt-2">Dengan lanjut ke pembayaran, kamu telah menyetujui menyetujui <a href="#">Syarat dan Ketentuan</a> serta <a href="#">Kebijakan Privasi</a> dari Hotel Telaga Mas.</p>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="hotel-info-card">
+                    <div class="header">
+                        <h5>Telaga Mas International Hotel</h5>
+                    </div>
+                    <img src="{{ url_for('static', filename='img/hotel-img/foto-hotel.jpg') }}" alt="Telaga Mas International Hotel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <i class="fa fa-calendar-alt"></i>
+                                    <p>Check-in: {{ check_in_date }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <i class="fa fa-calendar-alt"></i>
+                                    <p id="checkOutDate">Check-out: {{ check_out_date }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><i class="fa fa-user-friends"></i> 2 Tamu</li>
+                        <li><i class="fa fa-bed"></i> 1 Double Bed Atau 1 Ranjang Twin</li>
+                        <li><i class="fa fa-coffee"></i> Tanpa Sarapan</li>
+                        <li><i class="fa fa-wifi"></i> WiFi Gratis</li>
+                    </ul>
+                    <div class="pricing">
+                        <span class="discounted-price">Rp {{ harga_normal }}</span>
+                        <span class="total-price">Rp {{ harga_diskon }}</span>
+                        <p><span class="badge badge-success">Lebih murah dari biasanya!</span></p>
+                    </div>                    
+                </div>
+            </div>            
+        </div>
+    </div>
+
+    {% include 'footer/footer.html' %}
+
+    <!-- Font Awesome -->
+    <script type="text/javascript"
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-fRGXe4Msp4dHHS-n"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('others').addEventListener('change', function() {
+            var othersDetails = document.getElementById('othersDetails');
+            var othersText = document.getElementById('othersText');
+            if (this.checked) {
+                othersDetails.classList.remove('hidden');
+                othersText.setAttribute('required', 'required');
+            } else {
+                othersDetails.classList.add('hidden');
+                othersText.removeAttribute('required');
+            }
+        });
+
+        document.getElementById('bookForOthers').addEventListener('change', function() {
+            var guestNameField = document.getElementById('guestNameField');
+            guestNameField.classList.remove('hidden');
+            document.getElementById('guestName').setAttribute('required', 'required');
+        });
+
+        document.getElementById('sameAsBooker').addEventListener('change', function() {
+            var guestNameField = document.getElementById('guestNameField');
+            guestNameField.classList.add('hidden');
+            document.getElementById('guestName').removeAttribute('required');
+        });
+
+        document.getElementById('lamaInap').addEventListener('change', function() {
+            var lamaInap = parseInt(this.value);
+            var hargaPerMalam = {{harga_diskon}}; // Anda dapat menggantinya dengan harga dari database jika dinamis
+            var pajakBiaya = (hargaPerMalam * lamaInap * 0.1) + 15000;
+            var hargaKamar = hargaPerMalam * lamaInap;
+            var hargaTotal = hargaKamar;
+
+            document.getElementById('hargaKamar').innerText = 'Rp ' + hargaKamar.toLocaleString('id-ID');
+            document.getElementById('hargaTotal').innerText = 'Rp ' + hargaTotal.toLocaleString('id-ID');
+        });
+
+        document.getElementById('pay-button').addEventListener('click', function(e) {
+            e.preventDefault();
+        
+            var data = {
+                namaLengkap: document.getElementById('namaLengkap').value,
+                email: document.getElementById('email').value,
+                nomorHandphone: document.getElementById('nomorHandphone').value,
+            };
+        
+            fetch('/get_token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    console.log('Received token:', data.token);
+                    snap.pay(data.token);
+                } else {
+                    console.error('Error:', data.error);
+                    alert('Failed to get token: ' + JSON.stringify(data.error));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to get token: ' + error.message);
+            });
+        });
+        document.getElementById('lamaInap').addEventListener('change', function() {
+            var lamaInap = parseInt(this.value);
+            var hargaPerMalam = {{harga_diskon}};
+            var hargaKamar = hargaPerMalam * lamaInap;
+            var hargaTotal = hargaKamar;
+
+            document.getElementById('hargaKamar').innerText = 'Rp ' + hargaKamar.toLocaleString('id-ID');
+            document.getElementById('hargaTotal').innerText = 'Rp ' + hargaTotal.toLocaleString('id-ID');
+
+            var checkInDate = new Date('{{ check_in_date }}');
+            checkInDate.setDate(checkInDate.getDate() + lamaInap);
+            var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            var checkOutDateStr = checkInDate.toLocaleDateString('id-ID', options) + ' Sebelum 12:00';
+            document.getElementById('checkOutDate').innerText = 'Check-out: ' + checkOutDateStr;
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var hargaNormal = {{ harga_normal }};
+            var hargaDiskon = {{ harga_diskon }};
+        
+            document.querySelector('.discounted-price').innerText = 'Rp ' + hargaNormal.toLocaleString('id-ID');
+            document.querySelector('.total-price').innerText = 'Rp ' + hargaDiskon.toLocaleString('id-ID');
+            document.querySelector('#hargaKamar').innerText = 'Rp ' + hargaDiskon.toLocaleString('id-ID');
+            document.querySelector('#hargaTotal').innerText = 'Rp ' + hargaDiskon.toLocaleString('id-ID');
+        });
+        
+    </script>
+</body>
+
+</html>
