@@ -1,17 +1,6 @@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    function book() {
-        Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Anda belum mempunyai akun silahkan melakukan registrasi terlebih dahulu.",
-            footer: '<a href="{{ url_for('register') }}">Register</a>'
-          });
-    }
-</script>
-<nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
+<nav class="navbar navbar-expand-sm navbar-light navbar-custom flex-column">
     <h1>
-        <a class="navbar-brand" href="{{ url_for('home') }}"> Hotel Telaga Mas </a>
+        <a class="navbar-brand" href=""> Hotel Telaga Mas </a>
     </h1>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
         aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +34,7 @@
                 <a class="nav-link" href="{{ url_for('register') }}">Register</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-outline-primary ml-2" onclick="book()">Book Now</a>
+                <button type="button" class="btn btn-outline-info" onclick="location.href='{{ url_for('register') }}'">Booking</button>
             </li>
         </ul>
     </div>
