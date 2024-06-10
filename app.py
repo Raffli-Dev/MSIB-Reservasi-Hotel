@@ -263,7 +263,6 @@ def upload_photo():
     else:
         return redirect(url_for('login'))
 
-
 @app.route('/user/reservasi', methods=['GET'])
 def user_reservasi():
     if 'logged_in' in session:
@@ -326,10 +325,39 @@ def user_deluxe_book():
 @app.route('/user/room/booking/family-deluxe-room', methods=['GET', 'POST'])
 def user_family_deluxe_book():
     user_info = get_user_info()
+    
+    # Mendapatkan tanggal check-in dari query parameter atau default ke tanggal hari ini
+    check_in_date_str = request.args.get('check_in_date', datetime.today().strftime('%Y-%m-%d'))
+    check_in_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+    
+    # Mendapatkan harga dari query parameter atau default ke 0 dan mengubahnya menjadi float
+    harga_normal = float(request.args.get('harga_normal', '0'))
+    harga_diskon = float(request.args.get('harga_diskon', '0'))
+    
+    # Lama menginap default adalah 1 malam
+    lama_inap = int(request.args.get('lamaInap', '1'))
+    
+    # Tanggal check-out dihitung dari tanggal check-in + lama menginap
+    check_out_date = check_in_date + timedelta(days=lama_inap)
+    
+    # Format tanggal check-in dan check-out untuk ditampilkan
+    check_in_date_display_str = check_in_date.strftime('%a, %d %b %Y')
+    check_out_date_display_str = check_out_date.strftime('%a, %d %b %Y Sebelum 12:00')
+
     if user_info:
-        return render_template('user/book/family_deluxe_book.html', user_info=user_info)
+        return render_template(
+            'user/book/deluxe_book.html', 
+            user_info=user_info, 
+            check_in_date_display=check_in_date_display_str,  # Tanggal untuk tampilan
+            check_in_date=check_in_date_str,  # Tanggal untuk perhitungan
+            check_out_date=check_out_date_display_str,
+            harga_normal=harga_normal, 
+            harga_diskon=harga_diskon, 
+            lama_inap=lama_inap
+        )
     else:
         return redirect(url_for('login'))
+
 
 
 # Setup logging
@@ -344,7 +372,7 @@ def get_token():
     payload = {
         "transaction_details": {
             "order_id": "order-id-test-" + str(int(time.time())),
-            "gross_amount": 500000
+            "gross_amount": 2500000000
         },
         "customer_details": {
             "first_name": data['namaLengkap'],
@@ -354,7 +382,7 @@ def get_token():
     }
 
     # Headers untuk otentikasi dengan Midtrans
-    server_key = 'SB-Mid-server-Q0z2rAvW5dziFzMoTBMlnh05'  # Ganti dengan server key sandbox Anda
+    server_key = 'SB-Mid-server-JUzhi1k0gVq8z6_BJ5-K4LoU'
     auth_str = server_key + ':'
     auth_bytes = auth_str.encode('utf-8')
     auth_base64 = base64.b64encode(auth_bytes).decode('utf-8')
