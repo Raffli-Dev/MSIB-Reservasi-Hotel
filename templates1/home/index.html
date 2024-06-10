@@ -62,6 +62,24 @@
     </script>
   </head>
 
+        document.addEventListener("DOMContentLoaded", function() {
+          var i = 0;
+          var txt = "Temukan pengalaman menginap yang tak terlupakan di Hotel Telaga Mas. Dengan pemandangan indah, fasilitas lengkap, dan pelayanan istimewa, kami siap menyambut Anda dengan hangat."; 
+          var speed = 50;
+    
+          function typeWriter() {
+            if (i < txt.length) {
+              document.getElementById("demo").innerHTML += txt.charAt(i);
+              i++;
+              setTimeout(typeWriter, speed);
+            }
+          }
+    
+          typeWriter();
+        });
+      </script>
+  </head>
+
   <body>
     {% include 'home/header.html' %}
 
@@ -83,6 +101,22 @@
     <br>
     <!--Card-->
     <div class="container" style="margin-top: 60px;">
+        <div class="foto-home">
+          <p id="demo"></p>
+        </div>
+        <div class="sec">
+          <h4>Selamat Datang di Hotel megah dan mewah</h4>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
+            vitae qui laborum laudantium dolores recusandae, voluptas quod,
+            asperiores, libero nisi id odio quis mollitia rerum? Inventore
+            perspiciatis fuga temporibus quaerat.
+          </p>
+        </div>
+      </div>
+    <!--End Homepage Awal-->
+    <!--Card-->
+    <div class="container mt-5">
       <div class="card-deck">
         <div class="card">
           <img
@@ -110,6 +144,11 @@
           />
           <div class="card-body">
             <h5 class="card-title">Wisata Patung Naga</h5>
+            src="/static/img/hotel-img/foto-hotel2.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
             <p class="card-text">
               This card has supporting text below as a natural lead-in to
               additional content.
@@ -127,6 +166,11 @@
           />
           <div class="card-body">
             <h5 class="card-title">Area Speedbot</h5>
+            src="/static/img/hotel-img/foto-hotel2.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
             <p class="card-text">
               This is a wider card with supporting text below as a natural
               lead-in to additional content. This card has even longer content
@@ -171,6 +215,46 @@
       </div>
    </div>
   <!-- End Container Ulasan -->
+    <!-- Card Ulasan -->
+
+    <!-- End Card Ulasan -->
+    <!-- Ulasan -->
+    <div class="container mt-5">
+      <div class="review-card">
+        <div class="review-header">
+          <div class="user-info">
+            <img
+              src="https://via.placeholder.com/50"
+              alt="User image"
+              width="50"
+              height="50"
+            />
+            <div>
+              <div class="name">rico p</div>
+              <div class="date">06 Mei 2024</div>
+            </div>
+          </div>
+          <div class="rating">9.1 / 10</div>
+        </div>
+        <div class="review-content mt-2">
+          View hotel menghadap langsung ke Telaga Sarangan, untuk kamar cukup
+          bersih, sudah ada air panas towel dan coffee maker. Tempat parkir
+          kendaraan cukup luas. Untuk amenities belum di sediakan di kamar, dan
+          tidak ada AC. Karena saat malam pun di kamar sudah sangat dingin.
+        </div>
+        <div class="mt-2">
+          <i class="fas fa-thumbs-up mb-2"></i> 1 orang menyukai review ini
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            style="border-radius: 15px"
+          ></textarea>
+          <button type="button" class="btn btn-success mt-3">Comment</button>
+        </div>
+      </div>
+    </div>
+    <!-- End Ulasan -->
 
     {% include 'footer/footer.html' %}
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
