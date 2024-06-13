@@ -1,0 +1,250 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hotel Telaga Mas</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/admin/css/style.css') }}">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/style/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- AOS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+</head>
+<body>
+    {% include 'admin/dashboard/sidebar.html' %}
+
+    <div class="container mt-5" data-aos="fade-up">
+        <div class="row">
+            <!-- Kartu 1 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pendapatan</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">Rp{{ data.revenue | default(0) | number_format }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">Rp{{ data.revenue_family_deluxe | default(0) | number_format }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Kartu 5 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tamu</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">{{ data.total_guests | default(0) }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">{{ data.total_guests_family_deluxe | default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Kartu 6 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Menunggu Pembayaran</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">{{ data.pending_payments | default(0) }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">{{ data.pending_payments_family_deluxe | default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Kartu 10 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Menunggu Konfirmasi</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">{{ data.pending_confirmations | default(0) }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">{{ data.pending_confirmations_family_deluxe | default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Kartu 11 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Booking Diterima</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">{{ data.accepted_bookings | default(0) }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">{{ data.accepted_bookings_family_deluxe | default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Kartu 12 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Booking Ditolak</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">{{ data.rejected_bookings | default(0) }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">{{ data.rejected_bookings_family_deluxe | default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Kartu 13 -->
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="700">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Booking Dibatalkan</h5>
+                        <h6 class="card-title">Deluxe</h6>
+                        <p class="card-text">{{ data.cancelled_bookings | default(0) }}</p>
+                        <h6 class="card-title">Family Deluxe</h6>
+                        <p class="card-text">{{ data.cancelled_bookings_family_deluxe | default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4" data-aos="fade-up" data-aos-delay="800">
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Perbandingan Pendapatan</h5>
+                        <canvas id="revenueComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4" data-aos="fade-up" data-aos-delay="900">
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Perbandingan Status Booking Deluxe</h5>
+                        <canvas id="statusComparisonDeluxeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4" data-aos="fade-up" data-aos-delay="1000">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Perbandingan Status Booking Family Deluxe</h5>
+                        <canvas id="statusComparisonFamilyDeluxeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='style/admin/js/main.js') }}"></script>
+    
+    <!-- AOS JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure data is defined
+            const revenueDeluxe = {{ data.revenue | default(0) | tojson }};
+            const revenueFamilyDeluxe = {{ data.revenue_family_deluxe | default(0) | tojson }};
+
+            // Chart.js Pie Chart Perbandingan Pendapatan
+            const revenueComparisonCtx = document.getElementById('revenueComparisonChart').getContext('2d');
+            const revenueComparisonChart = new Chart(revenueComparisonCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Deluxe', 'Family Deluxe'],
+                    datasets: [{
+                        data: [revenueDeluxe, revenueFamilyDeluxe],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            // Data for Status Comparison Charts
+            const pendingPaymentsDeluxe = {{ data.pending_payments | default(0) | tojson }};
+            const pendingConfirmationsDeluxe = {{ data.pending_confirmations | default(0) | tojson }};
+            const acceptedBookingsDeluxe = {{ data.accepted_bookings | default(0) | tojson }};
+            const rejectedBookingsDeluxe = {{ data.rejected_bookings | default(0) | tojson }};
+            const cancelledBookingsDeluxe = {{ data.cancelled_bookings | default(0) | tojson }};
+
+            const pendingPaymentsFamilyDeluxe = {{ data.pending_payments_family_deluxe | default(0) | tojson }};
+            const pendingConfirmationsFamilyDeluxe = {{ data.pending_confirmations_family_deluxe | default(0) | tojson }};
+            const acceptedBookingsFamilyDeluxe = {{ data.accepted_bookings_family_deluxe | default(0) | tojson }};
+            const rejectedBookingsFamilyDeluxe = {{ data.rejected_bookings_family_deluxe | default(0) | tojson }};
+            const cancelledBookingsFamilyDeluxe = {{ data.cancelled_bookings_family_deluxe | default(0) | tojson }};
+
+            // Chart.js Doughnut Chart Perbandingan Status Booking Deluxe
+            const statusComparisonDeluxeCtx = document.getElementById('statusComparisonDeluxeChart').getContext('2d');
+            const statusComparisonDeluxeChart = new Chart(statusComparisonDeluxeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Booking Diterima', 'Booking Ditolak', 'Booking Dibatalkan'],
+                    datasets: [{
+                        data: [pendingPaymentsDeluxe, pendingConfirmationsDeluxe, acceptedBookingsDeluxe, rejectedBookingsDeluxe, cancelledBookingsDeluxe],
+                        backgroundColor: [
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            // Chart.js Doughnut Chart Perbandingan Status Booking Family Deluxe
+            const statusComparisonFamilyDeluxeCtx = document.getElementById('statusComparisonFamilyDeluxeChart').getContext('2d');
+            const statusComparisonFamilyDeluxeChart = new Chart(statusComparisonFamilyDeluxeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Booking Diterima', 'Booking Ditolak', 'Booking Dibatalkan'],
+                    datasets: [{
+                        data: [pendingPaymentsFamilyDeluxe, pendingConfirmationsFamilyDeluxe, acceptedBookingsFamilyDeluxe, rejectedBookingsFamilyDeluxe, cancelledBookingsFamilyDeluxe],
+                        backgroundColor: [
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            });
+        });
+    </script>
+</body>
+</html>
