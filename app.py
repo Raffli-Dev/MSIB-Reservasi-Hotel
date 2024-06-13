@@ -9,10 +9,8 @@ from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
 import base64
-import time
 import logging
 import locale
-import threading
 import json
 import pytz
 from bson.errors import InvalidId
@@ -294,6 +292,15 @@ def upload_photo():
         return redirect(url_for('login'))
 
 
+def format_currency(value):
+    return locale.format_string("%d", value, grouping=True)
+
+# Timezone for Indonesia (Jakarta)
+wib = pytz.timezone('Asia/Jakarta')
+
+
+from datetime import datetime
+
 @app.route('/user/reservasi', methods=['GET'])
 def user_reservasi():
     if 'logged_in' in session:
@@ -448,7 +455,7 @@ def deluxe_save_booking():
         email = data.get('email')
         nomor_handphone = data.get('nomorHandphone')
         pesanan_untuk = data.get('pesananUntuk')
-        guest_name = data.get('guestName')
+        guest_name = data.get('guestName')  # Pastikan ini diambil dari data yang dikirim
         lama_inap = data.get('lamaInap')
         permintaan_khusus = data.get('permintaanKhusus')
         harga_normal = data.get('hargaNormal')
@@ -471,7 +478,7 @@ def deluxe_save_booking():
             'email': email,
             'nomor_handphone': nomor_handphone,
             'pesanan_untuk': pesanan_untuk,
-            'guest_name': guest_name,
+            'guest_name': guest_name,  # Simpan guest_name ke database
             'lama_inap': lama_inap,
             'permintaan_khusus': permintaan_khusus,
             'harga_normal': harga_normal,
@@ -481,7 +488,7 @@ def deluxe_save_booking():
             'check_out_date': check_out_date,
             'created_at': created_at,
             'updated_at': updated_at,
-            'status': 'Menunggu Pembayaran'
+            'status': 'menunggu pembayaran'
         }
 
         db.deluxe_booking.insert_one(booking_data)
@@ -560,7 +567,7 @@ def payment_callback():
         booking_collection = db.deluxe_booking if db.deluxe_booking.find_one({'booking_code': order_id}) else db.family_deluxe_booking
         if transaction_status == 'capture':
             if fraud_status == 'accept':
-                booking_collection.update_one({'booking_code': order_id}, {'$set': {'status': 'Pembayaran Sukses'}})
+                booking_collection.update_one({'booking_code': order_id}, {'$set': {'status': 'menunggu konfirmasi'}})
                 return jsonify({'result': 'success'})
         elif transaction_status in ['settlement', 'pending']:
             booking_collection.update_one({'booking_code': order_id}, {'$set': {'status': 'menunggu konfirmasi'}})
@@ -638,6 +645,23 @@ def update_booking_status():
         logger.error('Failed to update booking status')
         return jsonify({'result': 'error', 'message': 'Failed to update booking status'}), 500
 
+@app.route('/cancel_booking', methods=['POST'])
+def cancel_booking():
+    booking_id = request.form.get('booking_id')
+    logger.info(f'Cancel booking request received for booking_id: {booking_id}')
+    if booking_id:
+        result_deluxe = db.deluxe_booking.update_one({'_id': ObjectId(booking_id)}, {'$set': {'status': 'dibatalkan'}})
+        result_family = db.family_deluxe_booking.update_one({'_id': ObjectId(booking_id)}, {'$set': {'status': 'dibatalkan'}})
+        
+        if result_deluxe.modified_count > 0 or result_family.modified_count > 0:
+            logger.info(f'Booking cancelled successfully for booking_id: {booking_id}')
+            return jsonify({'result': 'success', 'msg': 'Booking berhasil dibatalkan.'})
+        else:
+            logger.error(f'Failed to cancel booking for booking_id: {booking_id}')
+            return jsonify({'result': 'error', 'msg': 'Gagal membatalkan booking.'})
+    logger.error(f'Invalid booking_id: {booking_id}')
+    return jsonify({'result': 'error', 'msg': 'ID booking tidak valid.'})
+
 #route ini menangani ketika terjadi kesalahan dalam pembayaran midtrans maka akan dibatalkan otomatis oleh sistem
 @app.route('/booking_dibatalkan', methods=['POST'])
 def booking_dibatalkan():
@@ -659,6 +683,15 @@ def booking_dibatalkan():
         logger.error(f'Failed to cancel booking for booking_id: {booking_id}')
         return jsonify({'result': 'error', 'msg': 'Gagal membatalkan booking.'})
 
+
+@app.route('/user/room/booking/deluxe-room/order-place', methods=['GET', 'POST'])
+def order_place():
+    user_info = get_user_info()
+    if user_info:
+        return render_template('user/book/order_place.html', user_info=user_info)
+    else:
+        return redirect(url_for('login'))
+
 @app.route('/user/room/booking/deluxe-room/payment-success', methods=['GET', 'POST'])
 def order_success():
     user_info = get_user_info()
@@ -670,55 +703,100 @@ def order_success():
 @app.route('/user/room/booking/family-deluxe-room', methods=['GET', 'POST'])
 def user_family_deluxe_book():
     user_info = get_user_info()
+    
+    check_in_date_str = request.args.get('check_in_date', datetime.today().strftime('%Y-%m-%d'))
+    check_in_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+    
+    harga_normal = float(request.args.get('harga_normal', '0'))
+    harga_diskon = float(request.args.get('harga_diskon', '0'))
+    
+    lama_inap = int(request.args.get('lamaInap', '1'))
+    
+    check_out_date = check_in_date + timedelta(days=lama_inap)
+    
+    check_in_date_display_str = check_in_date.strftime('%d/%m/%Y')
+    check_out_date_display_str = check_out_date.strftime('%d/%m/%Y')
+
     if user_info:
-        return render_template('user/book/family_deluxe_book.html', user_info=user_info)
+        return render_template(
+            'user/book/family_deluxe_book.html', 
+            user_info=user_info, 
+            check_in_date_display=check_in_date_display_str,  
+            check_in_date=check_in_date_str,  
+            check_out_date=check_out_date_display_str,
+            harga_normal=harga_normal, 
+            harga_diskon=harga_diskon, 
+            lama_inap=lama_inap,
+            format_currency=lambda x: 'Rp {:,.0f}'.format(x).replace(',', '.')
+        )
     else:
         return redirect(url_for('login'))
 
+@app.route('/family_deluxe_save_booking', methods=['POST'])
+def family_deluxe_save_booking():
+    if request.method == 'POST':
+        data = request.get_json()
 
-# Setup logging
-logging.basicConfig(level=logging.DEBUG)
+        booking_code = data.get('bookingCode')
+        nama_lengkap = data.get('namaLengkap')
+        email = data.get('email')
+        nomor_handphone = data.get('nomorHandphone')
+        pesanan_untuk = data.get('pesananUntuk')
+        guest_name = data.get('guestName')
+        lama_inap = data.get('lamaInap')
+        permintaan_khusus = data.get('permintaanKhusus')
+        harga_normal = data.get('hargaNormal')
+        harga_diskon = data.get('hargaDiskon')
+        harga_total = data.get('hargaTotal')
+        check_in_date = data.get('checkInDate')
+        check_out_date = data.get('checkOutDate')
+        created_at = datetime.now(wib)
+        updated_at = datetime.now(wib)
 
-@app.route('/get_token', methods=['POST'])
-def get_token():
-    # Ambil data dari request
-    data = request.json
+        try:
+            lama_inap = int(lama_inap)
+        except ValueError:
+            return jsonify({'error': 'Lama inap harus berupa angka.'}), 400
 
-    # Data yang akan dikirim ke Midtrans untuk mendapatkan token
-    payload = {
-        "transaction_details": {
-            "order_id": "order-id-test-" + str(int(time.time())),
-            "gross_amount": 500000
-        },
-        "customer_details": {
-            "first_name": data['namaLengkap'],
-            "email": data['email'],
-            "phone": data['nomorHandphone']
+        booking_data = {
+            'booking_code': booking_code,
+            'tipe_kamar' : 'Family Deluxe',
+            'nama_lengkap': nama_lengkap,
+            'email': email,
+            'nomor_handphone': nomor_handphone,
+            'pesanan_untuk': pesanan_untuk,
+            'guest_name': guest_name,
+            'lama_inap': lama_inap,
+            'permintaan_khusus': permintaan_khusus,
+            'harga_normal': harga_normal,
+            'harga_diskon': harga_diskon,
+            'harga_total': harga_total,
+            'check_in_date': check_in_date,
+            'check_out_date': check_out_date,
+            'created_at': created_at,
+            'updated_at': updated_at,
+            'status': 'menunggu pembayaran'
         }
-    }
 
-    # Headers untuk otentikasi dengan Midtrans
-    server_key = 'SB-Mid-server-Q0z2rAvW5dziFzMoTBMlnh05'  # Ganti dengan server key sandbox Anda
-    auth_str = server_key + ':'
-    auth_bytes = auth_str.encode('utf-8')
-    auth_base64 = base64.b64encode(auth_bytes).decode('utf-8')
+        db.family_deluxe_booking.insert_one(booking_data)
 
-    headers = {
-        'Authorization': 'Basic ' + auth_base64,
-        'Content-Type': 'application/json'
-    }
+        return jsonify({'success': 'Booking berhasil disimpan!'}), 200
 
-    # Kirim request ke Midtrans
-    url = 'https://app.sandbox.midtrans.com/snap/v1/transactions'
+    return jsonify({'error': 'Metode tidak valid.'}), 400
 
-    response = requests.post(url, headers=headers, json=payload)
+@app.route('/user/room/booking/family-deluxe-room/order-place', methods=['GET', 'POST'])
+def family_order_place():
+    user_info = get_user_info()
+    if user_info:
+        return render_template('user/book/order_place.html', user_info=user_info)
+    else:
+        return redirect(url_for('login'))
 
-    logging.debug('Response status code: %s', response.status_code)
-    logging.debug('Response body: %s', response.text)
-
-    if response.status_code == 201:
-        token = response.json().get('token')
-        return jsonify({'token': token})
+@app.route('/user/room/booking/family-deluxe-room/payment-success', methods=['GET', 'POST'])
+def family_order_success():
+    user_info = get_user_info()
+    if user_info:
+        return render_template('user/book/order_success.html', user_info=user_info)
     else:
         return redirect(url_for('login'))
 
@@ -1293,9 +1371,12 @@ def admin_edit_guest(guest_id):
             harga_total = request.form.get('hargaTotal')
             check_in_date = request.form.get('checkInDate')
             check_out_date = request.form.get('checkOutDate')
+            status = request.form.get('status')
             alasan_penolakan = request.form.get('alasan_penolakan')
             updated_at = datetime.now(wib)
-
+            if status == 'pesanan ditolak' and not alasan_penolakan:
+                return jsonify({'error': 'Alasan penolakan wajib diisi'}), 400
+            # Convert numeric values
             try:
                 lama_inap = int(lama_inap)
                 harga_normal = float(harga_normal)
@@ -1319,6 +1400,7 @@ def admin_edit_guest(guest_id):
                     'harga_total': harga_total,
                     'check_in_date': check_in_date,
                     'check_out_date': check_out_date,
+                    'status': status,
                     'alasan_penolakan': alasan_penolakan,
                     'updated_at': updated_at
                 }}
