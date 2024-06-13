@@ -684,16 +684,16 @@ def booking_dibatalkan():
         return jsonify({'result': 'error', 'msg': 'Gagal membatalkan booking.'})
 
 
-@app.route('/user/room/booking/deluxe-room/order-place', methods=['GET', 'POST'])
-def order_place():
-    user_info = get_user_info()
-    if user_info:
-        return render_template('user/book/order_place.html', user_info=user_info)
-    else:
-        return redirect(url_for('login'))
-
 @app.route('/user/room/booking/deluxe-room/payment-success', methods=['GET', 'POST'])
 def order_success():
+    user_info = get_user_info()
+    if user_info:
+        return render_template('user/book/order_success.html', user_info=user_info)
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/user/room/booking/family-deluxe-room/payment-success', methods=['GET', 'POST'])
+def order_family_success():
     user_info = get_user_info()
     if user_info:
         return render_template('user/book/order_success.html', user_info=user_info)
@@ -784,14 +784,6 @@ def family_deluxe_save_booking():
 
     return jsonify({'error': 'Metode tidak valid.'}), 400
 
-@app.route('/user/room/booking/family-deluxe-room/order-place', methods=['GET', 'POST'])
-def family_order_place():
-    user_info = get_user_info()
-    if user_info:
-        return render_template('user/book/order_place.html', user_info=user_info)
-    else:
-        return redirect(url_for('login'))
-
 @app.route('/user/room/booking/family-deluxe-room/payment-success', methods=['GET', 'POST'])
 def family_order_success():
     user_info = get_user_info()
@@ -799,7 +791,6 @@ def family_order_success():
         return render_template('user/book/order_success.html', user_info=user_info)
     else:
         return redirect(url_for('login'))
-
 
 @app.route('/logout')
 def logout():
