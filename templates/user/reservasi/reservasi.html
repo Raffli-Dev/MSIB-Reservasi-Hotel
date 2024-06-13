@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Telaga Mas</title>
+    <title>Hotel Telaga Mas - Reservation History</title>
     <meta property="og:title" content="Reservasi Hotel Telaga Mas" />
     <meta property="og:description" content="Hotel Telaga Mas " />
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
@@ -12,21 +11,83 @@
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/style/style.css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    
-</head>
 
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- CSS -->
+     <link rel="stylesheet" href="../../../static/style/user/reservasi.css">
+</head>
 <body>
     {% include 'user/reservasi/header.html' %}
+
+    <div class="container mt-5">
+        <h2 class="text-center">History Reservasi</h2>
+        <div class="row justify-content-center">
+            {% for booking in user_bookings %}
+                {% if booking.status == 'Pembayaran Berhasil' %}
+                <div class="col-md-8">
+                    <div class="card booking-card" id="booking-{{ booking._id }}">
+                        <div class="card-header booking-card-header">
+                            <h5 class="card-title">Booking ID: {{ booking.booking_code }} 
+                                <div id="timer-{{ booking._id }}"></div>
+                            </h5>
+                        </div>
+                        <div class="card-body booking-card-body">
+                            <p><strong>Nama:</strong> {{ booking.nama_lengkap }}</p>
+                            <p><strong>Email:</strong> {{ booking.email }}</p>
+                            <p><strong>Nomor Handphone:</strong> {{ booking.nomor_handphone|replace('+62', '') }}</p>
+                            <p><strong>Tipe Kamar:</strong> {{ booking.tipe_kamar }}</p>
+                            <p><strong>Pesanan Untuk:</strong> {{ booking.pesanan_untuk }}</p>
+                            <p><strong>Nama Tamu:</strong> {{ booking.guest_name }}</p>
+                            <p><strong>Lama Menginap:</strong> {{ booking.lama_inap }} Malam</p>
+                            {% if booking.permintaan_khusus|length <= 1 %}
+                            <p><strong>Permintaan Khusus:</strong> Tidak ada permintaan khusus</p>
+                            {% else %}
+                            <p><strong>Permintaan Khusus:</strong> {{ booking.permintaan_khusus[1:] | join(', ') }}</p>
+                            {% endif %}
+                            <p><strong>Harga Total:</strong> Rp {{ format_currency(booking.harga_total | default(0)) }}</span></p>
+                            <p><strong>Check-in:</strong> {{ booking.check_in_date }}</p>
+                            <p><strong>Check-out:</strong> {{ booking.check_out_date }}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="badge badge-success">{{ booking.status }}</span>
+                                {% if booking.status == 'pesanan ditolak' %}
+                                    <br>
+                                    <p><strong>Alasan:</strong> 
+                                        <span class="badge badge-danger">{{ booking.alasan_penolakan }}</span>                            
+                                    </p>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="card-footer booking-card-footer">
+                            <a class="btn btn-print btn-primary" onclick="printOrder('{{ booking.nama_lengkap }}', '{{ booking.alamat }}', '{{ booking.nomor_handphone|replace('+62', '') }}', '{{ booking.tipe_kamar }}', '{{ booking.check_in_date }}', '{{ booking.check_out_date }}', '{{ booking.lama_inap }}', '{{ booking.harga_total }}', '{{ booking.status }}', '{{ booking.booking_code }}')">Cetak Bukti</a>
+                            {% if booking.can_review %}
+                                {% if not booking.review_exists %}
+                                    <a class="btn btn-warning btn-review" href="/give_review/{{ booking._id }}">Tulis Ulasan</a>
+                                {% else %}
+                                    <button class="btn btn-warning btn-review" disabled>Ulasan Sudah Dibuat</button>
+                                {% endif %}
+                            {% endif %}
+                        </div>     
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>        
+    </div>
+
+    <div class="footer-spacing"></div>
     {% include 'user/footer/footer.html' %}
 
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-fRGXe4Msp4dHHS-n"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../../../static/script/cetak_bukti.js"></script>
 </body>
-
 </html>

@@ -35,6 +35,11 @@
         .profile-info select {
             margin-bottom: 10px;
         }
+
+        .delete-icon {
+            cursor: pointer;
+            color: red;
+        }
     </style>
 </head>
 
@@ -119,24 +124,26 @@
                         <!-- Ulasan -->
                         <div class="container mt-3">
                             <h5>Review</h5>
-                            <div class="review-card">
-                                <div class="review-header">
-                                    <div class="user-info">
-                                        <img src="https://via.placeholder.com/50" alt="Foto Pengguna" width="50" height="50">
+                            {% for review in reviews %}
+                            <div class="review-card mb-3">
+                                <div class="review-header d-flex justify-content-between align-items-center">
+                                    <div class="user-info d-flex align-items-center">
+                                        <img src="{{ user_info.profile_picture_url }}" alt="Foto Pengguna" width="50" height="50" class="mr-3">
                                         <div>
-                                            <div class="name">rico p</div>
-                                            <div class="date">06 Mei 2024</div>
+                                            <div class="name">{{ user_info.full_name }}</div>
+                                            <div class="date">{{ review.created_at.strftime('%d %B %Y') }}</div>
                                         </div>
                                     </div>
-                                    <div class="rating">9.1 / 10</div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rating mr-3">{{ review.rating }} / 5</div>
+                                        <i class="fas fa-trash delete-icon" data-review-id="{{ review._id }}"></i>
+                                    </div>
                                 </div>
                                 <div class="review-content mt-2">
-                                    View hotel menghadap langsung ke Telaga Sarangan, untuk kamar cukup bersih, sudah ada air panas towel dan coffee maker. Tempat parkir kendaraan cukup luas. Untuk amenities belum di sediakan di kamar, dan tidak ada AC. Karena saat malam pun di kamar sudah sangat dingin.
-                                </div>
-                                <div class="mt-2">
-                                    <i class="fas fa-thumbs-up"></i> 1 orang menyukai review ini
+                                    {{ review.review }}
                                 </div>
                             </div>
+                            {% endfor %}
                         </div>
                         <!-- End Ulasan -->
                     </div>
@@ -147,9 +154,53 @@
 
     {% include 'user/footer/footer.html' %}
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.delete-icon').forEach(icon => {
+                icon.addEventListener('click', () => {
+                    const reviewId = icon.getAttribute('data-review-id');
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Anda tidak dapat mengembalikan ini!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, hapus!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/delete_review/${reviewId}`, {
+                                method: 'DELETE'
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    Swal.fire(
+                                        'Dihapus!',
+                                        'Review Anda telah dihapus.',
+                                        'success'
+                                    ).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Gagal!',
+                                        'Gagal menghapus review Anda.',
+                                        'error'
+                                    );
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

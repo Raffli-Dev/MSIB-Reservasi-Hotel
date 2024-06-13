@@ -8,7 +8,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'style/admin/css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/admin/css/style.css') }}">
 
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
@@ -30,25 +30,25 @@
             <div class="form-group">
                 <label for="roomType">Tipe Kamar</label>
                 <select class="form-control" id="roomType" name="roomType" required>
-                    <option value="Deluxe" {% if room.type == 'Deluxe' %}selected{% endif %}>Kamar Deluxe</option>
-                    <option value="Deluxe Family" {% if room.type == 'Deluxe Family' %}selected{% endif %}>Kamar Deluxe Family</option>
+                    <option value="Deluxe" {% if room.room_type == 'Deluxe' %}selected{% endif %}>Kamar Deluxe</option>
+                    <option value="Family Deluxe" {% if room.room_type == 'Family Deluxe' %}selected{% endif %}>Kamar Family Deluxe</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="date">Tanggal</label>
-                <input type="date" class="form-control" id="date" name="date" value="{{ room.date }}" required>
+                <input type="date" class="form-control" id="date" name="date" value="{{ room.date|to_date_input_format }}" required>
             </div>
             <div class="form-group">
-                <label for="price">Stok Kamar</label>
-                <input type="number" class="form-control" id="stock" name="stock"  value="{{ room.stock }}" required>
+                <label for="stock">Stok Kamar</label>
+                <input type="number" class="form-control" id="stock" name="stock" value="{{ room.stock }}" required>
             </div>
             <div class="form-group">
                 <label for="price">Harga Normal</label>
-                <input type="number" class="form-control" id="price" name="price"  value="{{ room.price }}" required>
+                <input type="number" class="form-control" id="price" name="price" value="{{ room.price }}" required>
             </div>
             <div class="form-group">
-                <label for="price">Harga Diskon</label>
-                <input type="number" class="form-control" id="discount_price"  name="discount_price"  value="{{ room.discount_price }}" required>
+                <label for="discount_price">Harga Diskon</label>
+                <input type="number" class="form-control" id="discount_price" name="discount_price" value="{{ room.discount_price }}" required>
             </div>
             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </form>
@@ -57,7 +57,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="{{ url_for('static', filename = 'style/admin/js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='style/admin/js/main.js') }}"></script>
 </body>
 
 </html>

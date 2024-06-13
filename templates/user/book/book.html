@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="../static/style/style.css">
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+    <!-- Library dayjs -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.7/dayjs.min.js"></script>
 </head>
 
 <body>
@@ -73,8 +74,8 @@
                                         <!-- bagian ini dalam kolom Harga/kamar/malam di bagian Deluxe Room -->
                                         <td>
                                             {% if deluxe_room %}
-                                            <p class="original-price">Price: Rp {{ deluxe_room . price }}</p>
-                                            <p class="price">Price: Rp {{ deluxe_room . discount_price }}</p>
+                                            <p  class="original-price">Rp {{ format_currency(deluxe_room.price | default(0)) }}</p>
+                                            <p id="deluxe-price" class="price">Rp {{ format_currency(deluxe_room.discount_price | default(0)) }}</p>
                                             <p>Di luar pajak & biaya</p>
                                             {% else %}
                                             <p>Tidak ada kamar tersedia untuk tanggal ini.</p>
@@ -82,13 +83,19 @@
                                         </td>
                                         <td>
                                             {% if deluxe_room %}
-                                            <a href="{{ url_for('user_deluxe_book', check_in_date = request . args . get('check_in_date'), harga_diskon = deluxe_room . discount_price, harga_normal = deluxe_room . price) }}"
-                                                class="btn btn-primary btn-pilih">Pilih</a>
+                                                {% if deluxe_room.stock == 0 %}
+                                                    <span class="text-danger">Stok kamar kosong</span>
+                                                    <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
+                                                {% elif deluxe_room.stock < 5 %}
+                                                    <span class="text-warning">Stok sisa sedikit</span>
+                                                    <a href="{{ url_for('user_deluxe_book', check_in_date=request.args.get('check_in_date'), harga_diskon=deluxe_room.discount_price, harga_normal=deluxe_room.price) }}" class="btn btn-primary btn-pilih">Pilih</a>
+                                                {% else %}
+                                                    <a href="{{ url_for('user_deluxe_book', check_in_date=request.args.get('check_in_date'), harga_diskon=deluxe_room.discount_price, harga_normal=deluxe_room.price) }}" class="btn btn-primary btn-pilih">Pilih</a>
+                                                {% endif %}
                                             {% else %}
-                                            <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
+                                                <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
                                             {% endif %}
-                                        </td>
-
+                                        </td>                                        
                                     </tr>
                                 </tbody>
                             </table>
@@ -128,8 +135,8 @@
                                         </td>
                                         <td>
                                             {% if deluxe_family_room %}
-                                            <p id="original-price" class="original-price">Price: Rp {{ deluxe_family_room . price }}</p>
-                                            <p id="price" class="price">Price: Rp {{ deluxe_family_room . discount_price }}</p>
+                                            <p  class="original-price">Rp {{ format_currency(deluxe_family_room.price | default(0)) }}</p>
+                                            <p id="deluxe-price" class="price">Rp {{ format_currency(deluxe_family_room.discount_price | default(0)) }}</p>
                                             <p>Di luar pajak & biaya</p>
                                             {% else %}
                                             <p>Tidak ada kamar tersedia untuk tanggal ini.</p>
@@ -137,12 +144,19 @@
                                         </td>
                                         <td>
                                             {% if deluxe_family_room %}
-                                            <a href="{{ url_for('user_family_deluxe_book') }}"
-                                                class="btn btn-primary btn-pilih">Pilih</a>
+                                                {% if deluxe_family_room.stock == 0 %}
+                                                    <span class="text-danger">Stok kamar kosong</span>
+                                                    <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
+                                                {% elif deluxe_family_room.stock < 5 %}
+                                                    <span class="text-warning">Stok sisa sedikit</span>
+                                                    <a href="{{ url_for('user_family_deluxe_book', check_in_date=request.args.get('check_in_date'), harga_diskon=deluxe_family_room.discount_price, harga_normal=deluxe_family_room.price) }}" class="btn btn-primary btn-pilih">Pilih</a>
+                                                {% else %}
+                                                    <a href="{{ url_for('user_family_deluxe_book', check_in_date=request.args.get('check_in_date'), harga_diskon=deluxe_family_room.discount_price, harga_normal=deluxe_family_room.price) }}" class="btn btn-primary btn-pilih">Pilih</a>
+                                                {% endif %}
                                             {% else %}
-                                            <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
+                                                <button class="btn btn-secondary btn-pilih" disabled>Pilih</button>
                                             {% endif %}
-                                        </td>
+                                        </td>       
                                     </tr>
                                 </tbody>
                             </table>
@@ -161,19 +175,17 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var hargaNormal = {{ deluxe_room . price }};
-            var hargaDiskon = {{ deluxe_room . discount_price }};
-            var hargaNormal_family = {{ deluxe_family_room . price }};
-            var hargaDiskon_family = {{ deluxe_family_room . discount_price }};
-
-            document.querySelector('.original-price').innerText = 'Rp ' + hargaNormal.toLocaleString('id-ID');
-            document.querySelector('.price').innerText = 'Rp ' + hargaDiskon.toLocaleString('id-ID');
-            document.querySelector('#original-price').innerText = 'Rp ' + hargaNormal_family.toLocaleString('id-ID');
-            document.querySelector('#price').innerText = 'Rp ' + hargaDiskon_family.toLocaleString('id-ID');
+            var checkInDateInput = document.getElementById('checkInDate');
+            var today = dayjs();
+            var maxDate = today.add(3, 'month').format('YYYY-MM-DD'); // Tambahkan 6 bulan ke tanggal saat ini
+            checkInDateInput.setAttribute('min', today.format('YYYY-MM-DD'));
+            checkInDateInput.setAttribute('max', maxDate); // Set maksimum 6 bulan ke depan
         });
     </script>
+    
 </body>
 
 </html>
