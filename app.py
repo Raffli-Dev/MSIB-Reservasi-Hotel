@@ -457,7 +457,7 @@ def deluxe_save_booking():
         email = data.get('email')
         nomor_handphone = data.get('nomorHandphone')
         pesanan_untuk = data.get('pesananUntuk')
-        guest_name = data.get('guestName')  # Pastikan ini diambil dari data yang dikirim
+        guest_name = data.get('guestName')
         lama_inap = data.get('lamaInap')
         permintaan_khusus = data.get('permintaanKhusus')
         harga_normal = data.get('hargaNormal')
@@ -480,7 +480,7 @@ def deluxe_save_booking():
             'email': email,
             'nomor_handphone': nomor_handphone,
             'pesanan_untuk': pesanan_untuk,
-            'guest_name': guest_name,  # Simpan guest_name ke database
+            'guest_name': guest_name,
             'lama_inap': lama_inap,
             'permintaan_khusus': permintaan_khusus,
             'harga_normal': harga_normal,
@@ -667,15 +667,6 @@ def booking_dibatalkan():
     else:
         logger.error(f'Failed to cancel booking for booking_id: {booking_id}')
         return jsonify({'result': 'error', 'msg': 'Gagal membatalkan booking.'})
-
-
-@app.route('/user/room/booking/deluxe-room/order-place', methods=['GET', 'POST'])
-def order_place():
-    user_info = get_user_info()
-    if user_info:
-        return render_template('user/book/order_place.html', user_info=user_info)
-    else:
-        return redirect(url_for('login'))
 
 @app.route('/user/room/booking/deluxe-room/payment-success', methods=['GET', 'POST'])
 def order_success():

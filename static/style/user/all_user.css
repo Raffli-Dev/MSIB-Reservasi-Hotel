@@ -1,0 +1,107 @@
+/* style halaman profile */
+.profile-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-info {
+    margin-top: 20px;
+}
+
+.profile-info input,
+.profile-info select {
+    margin-bottom: 10px;
+}
+
+.delete-icon {
+    cursor: pointer;
+    color: red;
+}
+/* style halaman edit profile */
+.profile-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-info {
+    margin-top: 20px;
+}
+
+.profile-info input,
+.profile-info select {
+    margin-bottom: 10px;
+}
+
+/* style halaman family deluxe book */
+.booking-header {
+    margin-bottom: 20px;
+}
+
+.booking-section {
+    margin-bottom: 20px;
+}
+
+.hotel-info-card,
+.form-card,
+.price-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+}
+
+.hotel-info-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.discounted-price {
+    text-decoration: line-through;
+    color: red;
+}
+
+.total-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.form-check-label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-group .form-check {
+    flex: 1 1 45%;
+    min-width: 200px;
+}
+
+.hidden {
+    display: none;
+}
+
+.required-warning {
+    color: red;
+    font-size: 12px;
+}

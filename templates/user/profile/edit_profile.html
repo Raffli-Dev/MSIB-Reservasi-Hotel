@@ -12,31 +12,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker/dist/css/datepicker.min.css">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../../static/style/style.css">
+    <link rel="stylesheet" href="../../../static/style/style.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .profile-container {
-            max-width: 800px;
-            margin: auto;
-        }
-
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .profile-info {
-            margin-top: 20px;
-        }
-
-        .profile-info input,
-        .profile-info select {
-            margin-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="../../../static/style/user/all_user.css">
 </head>
 
 <body>
@@ -103,7 +81,7 @@
                                         <label class="mb-0">Tanggal Lahir</label>
                                     </div>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="birthDate" name="birthDate"
+                                        <input type="date" class="form-control" id="birthDate" name="birthDate"
                                             value="{{ user_info . birth_date }}">
                                     </div>
                                 </div>
@@ -177,15 +155,6 @@
     </section>
 
     {% include 'user/footer/footer.html' %}
-    <script>
-        $(document).ready(function() {
-            $('#birthDate').datepicker({
-                format: 'yyyy-mm-dd', // Format tanggal yang diinginkan
-                autoclose: true,
-                language: 'en'
-            });
-        });
-    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
