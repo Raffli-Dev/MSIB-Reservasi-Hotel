@@ -294,15 +294,6 @@ def upload_photo():
         return redirect(url_for('login'))
 
 
-def format_currency(value):
-    return locale.format_string("%d", value, grouping=True)
-
-# Timezone for Indonesia (Jakarta)
-wib = pytz.timezone('Asia/Jakarta')
-
-
-from datetime import datetime
-
 @app.route('/user/reservasi', methods=['GET'])
 def user_reservasi():
     if 'logged_in' in session:
@@ -679,100 +670,55 @@ def order_success():
 @app.route('/user/room/booking/family-deluxe-room', methods=['GET', 'POST'])
 def user_family_deluxe_book():
     user_info = get_user_info()
-    
-    check_in_date_str = request.args.get('check_in_date', datetime.today().strftime('%Y-%m-%d'))
-    check_in_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
-    
-    harga_normal = float(request.args.get('harga_normal', '0'))
-    harga_diskon = float(request.args.get('harga_diskon', '0'))
-    
-    lama_inap = int(request.args.get('lamaInap', '1'))
-    
-    check_out_date = check_in_date + timedelta(days=lama_inap)
-    
-    check_in_date_display_str = check_in_date.strftime('%d/%m/%Y')
-    check_out_date_display_str = check_out_date.strftime('%d/%m/%Y')
-
     if user_info:
-        return render_template(
-            'user/book/family_deluxe_book.html', 
-            user_info=user_info, 
-            check_in_date_display=check_in_date_display_str,  
-            check_in_date=check_in_date_str,  
-            check_out_date=check_out_date_display_str,
-            harga_normal=harga_normal, 
-            harga_diskon=harga_diskon, 
-            lama_inap=lama_inap,
-            format_currency=lambda x: 'Rp {:,.0f}'.format(x).replace(',', '.')
-        )
+        return render_template('user/book/family_deluxe_book.html', user_info=user_info)
     else:
         return redirect(url_for('login'))
 
-@app.route('/family_deluxe_save_booking', methods=['POST'])
-def family_deluxe_save_booking():
-    if request.method == 'POST':
-        data = request.get_json()
 
-        booking_code = data.get('bookingCode')
-        nama_lengkap = data.get('namaLengkap')
-        email = data.get('email')
-        nomor_handphone = data.get('nomorHandphone')
-        pesanan_untuk = data.get('pesananUntuk')
-        guest_name = data.get('guestName')
-        lama_inap = data.get('lamaInap')
-        permintaan_khusus = data.get('permintaanKhusus')
-        harga_normal = data.get('hargaNormal')
-        harga_diskon = data.get('hargaDiskon')
-        harga_total = data.get('hargaTotal')
-        check_in_date = data.get('checkInDate')
-        check_out_date = data.get('checkOutDate')
-        created_at = datetime.now(wib)
-        updated_at = datetime.now(wib)
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)
 
-        try:
-            lama_inap = int(lama_inap)
-        except ValueError:
-            return jsonify({'error': 'Lama inap harus berupa angka.'}), 400
+@app.route('/get_token', methods=['POST'])
+def get_token():
+    # Ambil data dari request
+    data = request.json
 
-        booking_data = {
-            'booking_code': booking_code,
-            'tipe_kamar' : 'Family Deluxe',
-            'nama_lengkap': nama_lengkap,
-            'email': email,
-            'nomor_handphone': nomor_handphone,
-            'pesanan_untuk': pesanan_untuk,
-            'guest_name': guest_name,
-            'lama_inap': lama_inap,
-            'permintaan_khusus': permintaan_khusus,
-            'harga_normal': harga_normal,
-            'harga_diskon': harga_diskon,
-            'harga_total': harga_total,
-            'check_in_date': check_in_date,
-            'check_out_date': check_out_date,
-            'created_at': created_at,
-            'updated_at': updated_at,
-            'status': 'Menunggu Pembayaran'
+    # Data yang akan dikirim ke Midtrans untuk mendapatkan token
+    payload = {
+        "transaction_details": {
+            "order_id": "order-id-test-" + str(int(time.time())),
+            "gross_amount": 500000
+        },
+        "customer_details": {
+            "first_name": data['namaLengkap'],
+            "email": data['email'],
+            "phone": data['nomorHandphone']
         }
+    }
 
-        db.family_deluxe_booking.insert_one(booking_data)
+    # Headers untuk otentikasi dengan Midtrans
+    server_key = 'SB-Mid-server-Q0z2rAvW5dziFzMoTBMlnh05'  # Ganti dengan server key sandbox Anda
+    auth_str = server_key + ':'
+    auth_bytes = auth_str.encode('utf-8')
+    auth_base64 = base64.b64encode(auth_bytes).decode('utf-8')
 
-        return jsonify({'success': 'Booking berhasil disimpan!'}), 200
+    headers = {
+        'Authorization': 'Basic ' + auth_base64,
+        'Content-Type': 'application/json'
+    }
 
-    return jsonify({'error': 'Metode tidak valid.'}), 400
+    # Kirim request ke Midtrans
+    url = 'https://app.sandbox.midtrans.com/snap/v1/transactions'
 
-@app.route('/user/room/booking/family-deluxe-room/order-place', methods=['GET', 'POST'])
-def family_order_place():
-    user_info = get_user_info()
-    if user_info:
-        return render_template('user/book/order_place.html', user_info=user_info)
-    else:
-        return redirect(url_for('login'))
+    response = requests.post(url, headers=headers, json=payload)
 
-@app.route('/user/room/booking/family-deluxe-room/payment-success', methods=['GET', 'POST'])
-def family_order_success():
-    user_info = get_user_info()
-    if user_info:
-        return render_template('user/book/order_success.html', user_info=user_info)
+    logging.debug('Response status code: %s', response.status_code)
+    logging.debug('Response body: %s', response.text)
+
+    if response.status_code == 201:
+        token = response.json().get('token')
+        return jsonify({'token': token})
     else:
         return redirect(url_for('login'))
 

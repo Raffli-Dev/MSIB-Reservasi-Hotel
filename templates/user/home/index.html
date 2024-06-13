@@ -9,6 +9,14 @@
     <meta property="og:description" content="Hotel Telaga Mas " />
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Edu+TAS+Beginner:wght@400..700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -16,21 +24,42 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../static/style/style.css" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          var i = 0;
+          var txt = "Temukan pengalaman menginap yang tak terlupakan di Hotel Telaga Mas. Dengan pemandangan indah, fasilitas lengkap, dan pelayanan istimewa, kami siap menyambut Anda dengan hangat."; 
+          var speed = 50;
+    
+          function typeWriter() {
+            if (i < txt.length) {
+              document.getElementById("demo").innerHTML += txt.charAt(i);
+              i++;
+              setTimeout(typeWriter, speed);
+            }
+          }
+    
+          typeWriter();
+        });
+      </script>
 </head>
 
 <body>
     {% include 'user/home/header.html' %}
 
-    <div class="fluid">
-        <img src="{{ url_for('static', filename='img/wisata/sarangan1.jpg') }}" class="img-fluid w-100" alt="Deskripsi Gambar">
+    <!-- Homepage Awal -->
+    <!-- homepage awal -->
+    <div class="container-home">
+        <div class="foto-home">
+          <p id="demo"></p>
+            <p>"Temukan pengalaman menginap yang tak terlupakan di Hotel Telaga Mas. Dengan pemandangan indah, fasilitas lengkap, dan pelayanan istimewa, kami siap menyambut Anda dengan hangat."</p>
+        </div>
+        <div class="sec">
+            <h4>Selamat Datang di Hotel megah dan mewah</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis vitae qui laborum laudantium dolores recusandae, voluptas quod, asperiores, libero nisi id odio quis mollitia rerum? Inventore perspiciatis fuga temporibus quaerat.</p>
+        </div>
     </div>
-
-    <!-- Caraosel -->
-    <div class="sec">
-        <h2>Selamat Datang di Hotel megah dan mewah</h2>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda aspernatur dolorem natus tempora cumque numquam porro in placeat est rerum recusandae reprehenderit ipsum velit, maiores asperiores. Fugiat laboriosam autem itaque.</p>
-    </div>  
-    <!-- End Caraosel -->
+    <!--End Homepage Awal-->
+    <!--End Homepage Awal -->
     <div class="container mt-5">
         <div class="card-deck">
             <div class="card">
@@ -75,8 +104,80 @@
                 </div>
             </div>
         </div>
+        <div class="sec">
+          <h4>Selamat Datang di Hotel megah dan mewah</h4>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
+            vitae qui laborum laudantium dolores recusandae, voluptas quod,
+            asperiores, libero nisi id odio quis mollitia rerum? Inventore
+            perspiciatis fuga temporibus quaerat.
+          </p>
+        </div>
+      </div>
+    <!--End Homepage Awal-->
+    <br>
+    <!--Card-->
+    <div class="kartu">
+
+        <div class="container mt-5">
+            <div class="card-deck">
+              <div class="card">
+                <img
+                  class="card-img-top"
+                  src="https://c.top4top.io/p_3077me59m1.jpeg"
+                  alt="Card image cap"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">Wisata Telaga Sarangan</h5>
+                  <p class="card-text">
+                    This is a longer card with supporting text below as a natural
+                    lead-in to additional content. This content is a little bit
+                    longer.
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                  </p>
+                </div>
+              </div>
+              <div class="card">
+                <img
+                  class="card-img-top"
+                  src="https://b.top4top.io/p_3080nuvho2.jpg"
+                  alt="Card image cap"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">Wisata Patung Naga</h5>
+                  <p class="card-text">
+                    This card has supporting text below as a natural lead-in to
+                    additional content.
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                  </p>
+                </div>
+              </div>
+              <div class="card">
+                <img
+                  class="card-img-top"
+                  src="https://a.top4top.io/p_3080buruf1.jpg"
+                  alt="Card image cap"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">Area Speedbot</h5>
+                  <p class="card-text">
+                    This is a wider card with supporting text below as a natural
+                    lead-in to additional content. This card has even longer content
+                    than the first to show that equal height action.
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--End Cards-->
     </div>
-    <!--End Cards-->
     <!-- Ulasan -->
     <div class="container mt-5">
         <div class="review-card">
