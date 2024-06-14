@@ -401,12 +401,12 @@ def user_book():
     check_in_date = request.args.get('check_in_date')
     
     if not check_in_date:
-        check_in_date = datetime.today().strftime('%d/%m/%Y')
+        check_in_date = datetime.today().strftime('%Y-%m-%d')
     else:
-        check_in_date = datetime.strptime(check_in_date, '%Y-%m-%d').strftime('%d/%m/%Y')
+        check_in_date = datetime.strptime(check_in_date, '%Y-%m-%d').strftime('%Y-%m-%d')
     
     # Convert the date back to 'dd/mm/yyyy' for the database query
-    query_date = datetime.strptime(check_in_date, '%d/%m/%Y').strftime('%d/%m/%Y')
+    query_date = datetime.strptime(check_in_date, '%Y-%m-%d').strftime('%d/%m/%Y')
 
     deluxe_room = db.room_prices.find_one({"date": query_date, "room_type": "Deluxe"})
     deluxe_family_room = db.room_prices.find_one({"date": query_date, "room_type": "Family Deluxe"})
