@@ -18,7 +18,6 @@ document.getElementById('bookForOthers').addEventListener('change', function() {
     document.getElementById('guestName').setAttribute('required', 'required');
 });
 
-// Function to handle 'same as booker' radio button change
 document.getElementById('sameAsBooker').addEventListener('change', function() {
     var guestNameField = document.getElementById('guestNameField');
     guestNameField.classList.add('hidden');
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to handle booking submission
 document.getElementById('submitBooking').addEventListener('click', function() {
-    var bookingCode = 'Deluxe' + new Date().getTime();
+    var bookingCode = 'FamilyDlx' + new Date().getTime();
     var createdAt = new Date().toISOString();
     var updatedAt = new Date().toISOString();
     var pesananUntuk = $('input[name="pesananUntuk"]:checked').val();
@@ -105,7 +104,7 @@ document.getElementById('submitBooking').addEventListener('click', function() {
     bookingData.updatedAt = updatedAt;
 
     $.ajax({
-        url: '/deluxe_save_booking',
+        url: '/family_deluxe_save_booking',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(bookingData),
@@ -144,7 +143,7 @@ function payNow(bookingCode) {
                     data: JSON.stringify({ booking_code: bookingCode, new_status: 'Pembayaran Berhasil' }),
                     success: function(data) {
                         if (data.result === 'success') {
-                            window.location.href = '/user/room/booking/deluxe-room/payment-success';
+                            window.location.href = '/user/room/booking/family-deluxe-room/payment-success';
                         } else {
                             alert('Gagal memperbarui status booking: ' + data.message);
                         }
