@@ -112,13 +112,13 @@ def rooms():
                            today=today, 
                            tanggal_cek_in=tanggal_cek_in)
 
-@app.route('/rooms/deluxe', methods=['GET'])
+@app.route('/rooms/deluxe-room', methods=['GET'])
 def deluxe_room():
-    return render_template('room/rooms.html')
+    return render_template('room/duluxe.html')
 
-@app.route('/rooms/deluxe_family', methods=['GET'])
+@app.route('/rooms/family-room', methods=['GET'])
 def deluxe_family():
-    return render_template('room/deluxe_family.html')
+    return render_template('room/family_room.html')
 
 @app.route('/facilities', methods=['GET'])
 def facilities():
