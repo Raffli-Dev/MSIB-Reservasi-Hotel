@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     
-
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -34,37 +33,14 @@
         <h2 class="mb-2">GALLERY</h2>
         <hr class="orange-line">
         <div class="row mt-4">
+            {% for item in gallery %}
             <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
+                <img src="{{ item['gallery_picture_url'] }}" class="img-fluid gallery-img" alt="Gallery Image {{ loop.index }}">
             </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
-            <div class="col-md-4 mb-4">
-                <img src="../static/img/hotel-img/foto-hotel.jpg" class="img-fluid gallery-img" alt="Gallery Image 1">
-            </div>
+            {% endfor %}
         </div>
     </div>
     {% include 'footer/footer.html' %}
-
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
