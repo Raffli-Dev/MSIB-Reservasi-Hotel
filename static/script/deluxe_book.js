@@ -110,16 +110,7 @@ document.getElementById('submitBooking').addEventListener('click', function() {
         contentType: 'application/json',
         data: JSON.stringify(bookingData),
         success: function(response) {
-            Swal.fire({
-                title: 'Booking Berhasil!',
-                text: 'Booking berhasil disimpan. Anda akan diarahkan ke halaman konfirmasi.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    payNow(bookingCode);
-                }
-            });
+            payNow(bookingCode);
         },
         error: function(error) {
             Swal.fire({
