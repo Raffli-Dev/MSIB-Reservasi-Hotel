@@ -194,7 +194,25 @@
         var harga_diskon = {{ harga_diskon }};
         var check_in_date = '{{ check_in_date }}';
         var check_in_date_display = '{{ check_in_date_display }}';
-     </script>
+
+        function toggleSubmitButton() {
+            var hargaTotal = {{ harga_diskon }};
+            var submitButton = document.getElementById('submitBooking');
+            var checkInDate = new Date(check_in_date);
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (hargaTotal === 0 || checkInDate < today) {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleSubmitButton();
+        });
+    </script>
 </body>
 
 </html>

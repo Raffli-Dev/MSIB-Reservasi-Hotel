@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Telaga Mas</title>
+    <title>Booking Hotel Telaga Mas</title>
     <meta property="og:title" content="Reservasi Hotel Telaga Mas" />
     <meta property="og:description" content="Hotel Telaga Mas " />
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
@@ -17,8 +17,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/style/style.css">
     <link rel="stylesheet" href="../../../static/style/user/all_user.css">
-    
-    <link rel="stylesheet" href="/static/style/style.css">
 </head>
 
 <body>
@@ -147,7 +145,7 @@
                         <h5>Telaga Mas International Hotel</h5>
                     </div>
                     <img src="{{ url_for('static', filename='img/hotel-img/foto-hotel.jpg') }}" alt="Telaga Mas International Hotel">
-                    <div class="row mt-4">
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="card mb-3">
                                 <div class="card-body">
@@ -184,19 +182,37 @@
     {% include 'footer/footer.html' %}
 
     <!-- Font Awesome -->
-     <script>
-        var harga_normal = {{ harga_normal }};
-        var harga_diskon = {{ harga_diskon }};
-        var check_in_date = '{{ check_in_date }}';
-        var check_in_date_display = '{{ check_in_date_display }}';
-     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> <!-- Update to full version of jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-fRGXe4Msp4dHHS-n"></script>
     <script src="../../../static/script/deluxe_book.js"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-fRGXe4Msp4dHHS-n"></script>
+    <script>
+        var harga_normal = {{ harga_normal }};
+        var harga_diskon = {{ harga_diskon }};
+        var check_in_date = '{{ check_in_date }}';
+        var check_in_date_display = '{{ check_in_date_display }}';
 
-    </body>
+        function toggleSubmitButton() {
+            var hargaTotal = {{ harga_diskon }};
+            var submitButton = document.getElementById('submitBooking');
+            var checkInDate = new Date(check_in_date);
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (hargaTotal === 0 || checkInDate < today) {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleSubmitButton();
+        });
+    </script>
+</body>
+
 </html>

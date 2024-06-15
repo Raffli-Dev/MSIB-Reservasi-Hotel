@@ -6,54 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,600,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="../../../static/style/user/animate.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.10-0/css/ionicons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flaticon/2.1.0/css/flaticon.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.min.css">
-    <link rel="stylesheet" href="../../../static/style/user/flaticon.css">
-    <link rel="stylesheet" href="../../../static/style/user/icomoon.css">
-    <link rel="stylesheet" href="../../../static/style/user/ionicons.min.css">
-    <link rel="stylesheet" href="../../../static/style/user/style.css">
+    {% include 'home/head_import.html' %}
+
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}">Telaga<span>Mas</span></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
-                aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="oi oi-menu"></span> Menu
-            </button>
-
-            <div class="collapse navbar-collapse" id="ftco-nav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active"><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('rooms') }}">Room</a></li>
-                    <li class="nav-item"><a href="{{ url_for('facilities') }}" class="nav-link">Facilities</a></li>
-                    <li class="nav-item"><a href="{{ url_for('gallery') }}" class="nav-link">Gallery</a></li>
-                    <li class="nav-item"><a href="{{ url_for('contact') }}" class="nav-link">Contact</a></li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                  </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ml-auto">
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- END nav -->
-
-
+    {% include 'home/header.html' %}
     <div class="hero">
         <section class="home-slider owl-carousel">
             <div class="slider-item" style="background-image:url(../../../static/img/home/images/bg_1.1.jpg);">
@@ -95,34 +53,33 @@
                             <div class="col-md d-flex py-md-4">
                                 <div class="form-group align-self-stretch d-flex align-items-end">
                                     <div class="wrap align-self-stretch py-3 px-4">
-                                        <label for="#">Tanggal Check-in</label>
-                                        <input type="text" class="form-control checkin_date"
-                                            placeholder="Check-in date">
+                                        <label for="checkin_date">Tanggal Check-in</label>
+                                        <input type="date" name="checkin_date" id="checkin_date" class="form-control checkin_date" placeholder="Check-in date">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md d-flex py-md-4">
                                 <div class="form-group align-self-stretch d-flex align-items-end">
                                     <div class="wrap align-self-stretch py-3 px-4">
-                                        <label for="#">Kamar</label>
+                                        <label for="room">Kamar</label>
                                         <div class="form-field">
                                             <div class="select-wrap">
                                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                                <select name="" id="" class="form-control">
-                                                    <option value="">Kamar Deluxe</option>
-                                                    <option value="">Kamar Family Deluxe</option>
+                                                <select name="room" id="room" class="form-control">
+                                                    <option value="Deluxe">Kamar Deluxe</option>
+                                                    <option value="Family Deluxe">Kamar Family Deluxe</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+    
                             <div class="col-md d-flex">
                                 <div class="form-group d-flex align-self-stretch">
-                                    <a href="{{ url_for('register') }}"
-                                        class="btn btn-primary py-5 py-md-3 px-4 align-self-stretch d-block"><span>Cek
-                                            Ketersediaan Kamar <small>Jaminan Harga Terbaik</small></span></a>
+                                    <button type="button" id="search_button" class="btn btn-primary py-5 py-md-3 px-4 align-self-stretch d-block">
+                                        <span>Cek Ketersediaan Kamar <small>Jaminan Harga Terbaik</small></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -223,7 +180,7 @@
                         Telaga Mas menawarkan pengalaman menginap yang tak terlupakan. Dikelilingi oleh keindahan alam
                         Magetan, hotel ini adalah tempat yang sempurna untuk menikmati pesona alam dan ketenangan
                         sepanjang tahun.</p>
-                    <p><a href="{{ url_for('register') }}" class="btn btn-secondary rounded">Pesan Kamar Sekarang</a></p>
+                    <p><a href="{{ url_for('book') }}" class="btn btn-secondary rounded">Pesan Kamar Sekarang</a></p>
                 </div>
             </div>
         </div>
@@ -351,108 +308,37 @@
         </div>
     </section>
 
-    <footer class="ftco-footer ftco-section img"
-        style="background-image: url(../../../static/img/home/images/bg_4.jpg);">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4">
-                        <h2 class="ftco-heading-2">Harbor Lights</h2>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
-                            there live the blind texts.</p>
-                        <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
-                            <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                            <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                            <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4 ml-md-5">
-                        <h2 class="ftco-heading-2">Useful Links</h2>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="py-2 d-block">Blog</a></li>
-                            <li><a href="#" class="py-2 d-block">Rooms</a></li>
-                            <li><a href="#" class="py-2 d-block">Amenities</a></li>
-                            <li><a href="#" class="py-2 d-block">Gift Card</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4">
-                        <h2 class="ftco-heading-2">Privacy</h2>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="py-2 d-block">Career</a></li>
-                            <li><a href="#" class="py-2 d-block">About Us</a></li>
-                            <li><a href="#" class="py-2 d-block">Contact Us</a></li>
-                            <li><a href="#" class="py-2 d-block">Services</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4">
-                        <h2 class="ftco-heading-2">Have a Questions?</h2>
-                        <div class="block-23 mb-3">
-                            <ul>
-                                <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St.
-                                        Mountain View, San Francisco, California, USA</span></li>
-                                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2
-                                            392 3929 210</span></a></li>
-                                <li><a href="#"><span class="icon icon-envelope"></span><span
-                                            class="text">info@yourdomain.com</span></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-
-                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        Copyright &copy;
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script> All rights reserved | This template is made with <i
-                            class="icon-heart color-danger" aria-hidden="true"></i> by <a href="https://colorlib.com"
-                            target="_blank">Colorlib</a>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-
+    {% include 'home/footer.html' %}
 
     <!-- loader -->
-    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+    <div id="ftco-loader" class="show fullscreen">
+        <svg class="circular" width="48px" height="48px">
             <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4"
                 stroke="#eeeeee" />
             <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4"
                 stroke-miterlimit="10" stroke="#F96D00" />
-        </svg></div>
-
-    <script src="../../../static/script/js/jquery.min.js"></script>
-    <script src="../../../static/script/js/jquery-migrate-3.0.1.min.js"></script>
-    <script src="../../../static/script/js/popper.min.js"></script>
-    <script src="../../../static/script/js/bootstrap.min.js"></script>
-    <script src="../../../static/script/js/jquery.easing.1.3.js"></script>
-    <script src="../../../static/script/js/jquery.waypoints.min.js"></script>
-    <script src="../../../static/script/js/jquery.stellar.min.js"></script>
-    <script src="../../../static/script/js/owl.carousel.min.js"></script>
-    <script src="../../../static/script/js/jquery.magnific-popup.min.js"></script>
-    <script src="../../../static/script/js/aos.js"></script>
-    <script src="../../../static/script/js/jquery.animateNumber.min.js"></script>
-    <script src="../../../static/script/js/bootstrap-datepicker.js"></script>
-    <script src="../../../static/script/js/scrollax.min.js"></script>
-    <script src="../../../static/script/js/google-map.js"></script>
-    <script src="../../../static/script/js/main.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-
-
-
+        </svg>
+    </div>
+    {% include 'home/script_import.html' %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkinDateInput = document.getElementById('checkin_date');
+            var today = new Date().toISOString().split('T')[0];
+            checkinDateInput.setAttribute('min', today);
+        });
+    
+        document.getElementById('search_button').addEventListener('click', function() {
+            var checkinDate = document.getElementById('checkin_date').value;
+            var roomType = document.getElementById('room').value;
+            
+            if (checkinDate) {
+                window.location.href = '/book?check_in_date=' + checkinDate + '&room=' + roomType;
+            } else {
+                alert('Silakan pilih tanggal check-in terlebih dahulu.');
+            }
+        });
+    </script>
 </body>
 
 </html>
+
