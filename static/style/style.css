@@ -76,6 +76,7 @@ body {
 
 .navbar-brand {
 font-weight: bold;
+font-size: medium;
 }
 .navbar-nav .nav-item .nav-link.active {
 color: #FFD700;
