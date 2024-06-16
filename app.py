@@ -326,7 +326,7 @@ def user_gallery():
     user_info = get_user_info()
     if user_info:
         gallery = list(db.gallery.find())
-        return render_template('user/gallery/gallery.html', gallery=gallery)
+        return render_template('user/gallery/gallery.html', gallery=gallery, user_info=user_info)
     else:
         return redirect(url_for('login'))
 
