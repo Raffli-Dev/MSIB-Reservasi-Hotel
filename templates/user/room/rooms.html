@@ -5,12 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    {% include 'home/head_import.html' %}
+    {% include 'user/home/head_import.html' %}
 
   </head>
   <body>
 
-    {% include 'room/header_indo.html' %}
+    {% include 'user/room/header_indo.html' %}
 
 		<div class="hero-wrap" style="background-image:url(../../../static/img/home/images/deluxe.jpg);">
       <div class="overlay"></div>
@@ -43,7 +43,7 @@
     							<p class="star mb-0"><span class="ion-ios-star"></span><span class="ion-ios-star"></span><span class="ion-ios-star"></span></span></p>
     							<p class="mb-0"><span class="price mr-1">Rp {{ format_currency(deluxe_room.discount_price | default(0)) }}</span> <span class="per">per malam</span></p>
 	    						<h3 class="mb-3"><a href="#">Kamar Duluxe</a></h3>
-	    						<p class="pt-1"><a href="{{ url_for('deluxe_room') }}" class="btn-custom px-3 py-2 rounded">Lihat Rincian <span class="icon-long-arrow-right"></span></a></p>
+	    						<p class="pt-1"><a href="{{ url_for('user_deluxe_room') }}" class="btn-custom px-3 py-2 rounded">Lihat Rincian <span class="icon-long-arrow-right"></span></a></p>
     						</div>
     					</div>
     				</div>
@@ -56,7 +56,7 @@
     							<p class="star mb-0"></span><span class="ion-ios-star"></span><span class="ion-ios-star"></span><span class="ion-ios-star"></p>
     							<p class="mb-0"><span class="price mr-1">Rp {{ format_currency(deluxe_family_room.discount_price | default(0)) }}</span> <span class="per">per malam</span></p>
 	    						<h3 class="mb-3"><a href="#">Kamar Family Deluxe</a></h3>
-	    						<p class="pt-1"><a href="{{ url_for('deluxe_family') }}" class="btn-custom px-3 py-2 rounded">Lihat Rincian <span class="icon-long-arrow-right"></span></a></p>
+	    						<p class="pt-1"><a href="{{ url_for('user_deluxe_family') }}" class="btn-custom px-3 py-2 rounded">Lihat Rincian <span class="icon-long-arrow-right"></span></a></p>
     						</div>
     					</div>
     				</div>
@@ -65,13 +65,13 @@
     	</div>
     </section>
 
-    {% include 'home/footer.html' %}
+    {% include 'user/home/footer.html' %}
 
   <!-- loader -->
   <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
 
 
-  {% include 'home/script_import.html' %}
+  {% include 'user/home/script_import.html' %}
 
   </body>
 </html>
