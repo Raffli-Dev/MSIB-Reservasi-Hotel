@@ -5,6 +5,7 @@
     <title>Hotel Telaga Mas</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {% include 'home/head_import.html' %}
 
@@ -309,7 +310,12 @@
             if (checkinDate) {
                 window.location.href = '/book?check_in_date=' + checkinDate + '&room=' + roomType;
             } else {
-                alert('Silakan pilih tanggal check-in terlebih dahulu.');
+                Swal.fire({
+                    icon: "info",
+                    title: "Mohon registrasi akun terlebih dahulu",
+                    text: "Silakan pilih tanggal check-in terlebih dahulu.",
+                    footer: '<p><a href="{{ url_for('register') }}">Klik di sini</a> ,untuk melakukan Registrasi</p>'
+                  });
             }
         });
     </script>
