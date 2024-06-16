@@ -76,8 +76,14 @@ def handle_exception(e):
 def home():
     # Ambil ulasan dari database
     reviews = list(db.reviews.find().sort('created_at', -1))  # Mengambil semua ulasan dan mengurutkan berdasarkan tanggal
-    return render_template('home/index.html', reviews=reviews)
 
+    for review in reviews:
+        user = db.users.find_one({'email': review['email']})
+        if user:
+            review['profile_picture_url'] = user.get('profile_picture_url', '../../../static/img/default-profile.jpg')
+            review['full_name'] = user.get('full_name', 'Anonim')
+
+    return render_template('home/index.html', reviews=reviews)
 
 @app.route('/rooms', methods=['GET'])
 def rooms():
@@ -116,11 +122,11 @@ def rooms():
                            today=today, 
                            tanggal_cek_in=tanggal_cek_in)
 
-@app.route('/rooms/deluxe-room', methods=['GET'])
+@app.route('/rooms/deluxe', methods=['GET'])
 def deluxe_room():
     return render_template('room/duluxe.html')
 
-@app.route('/rooms/family-room', methods=['GET'])
+@app.route('/rooms/family-deluxe', methods=['GET'])
 def deluxe_family():
     return render_template('room/family_room.html')
 
@@ -237,7 +243,14 @@ def login():
 def user_index():
     user_info = get_user_info()
     if user_info:
-        return render_template('user/home/index.html', user_info=user_info)
+        reviews = list(db.reviews.find().sort('created_at', -1))  # Mengambil semua ulasan dan mengurutkan berdasarkan tanggal
+
+        for review in reviews:
+            user = db.users.find_one({'email': review['email']})
+            if user:
+                review['profile_picture_url'] = user.get('profile_picture_url', '../../../static/img/default-profile.jpg')
+                review['full_name'] = user.get('full_name', 'Anonim')
+        return render_template('user/home/index.html', user_info=user_info, reviews=reviews)
     else:
         return redirect(url_for('login'))
 
@@ -246,7 +259,41 @@ def user_index():
 def user_rooms():
     user_info = get_user_info()
     if user_info:
-        return render_template('user/room/rooms.html', user_info=user_info)
+        check_in_date_str = request.args.get('check_in_date')
+        today = datetime.today().date()
+        tanggal_cek_in = None
+
+        if check_in_date_str:
+            try:
+                tanggal_cek_in = datetime.strptime(check_in_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                return redirect(url_for('error_page'))
+
+        if not check_in_date_str:
+            check_in_date = datetime.today().strftime('%d/%m/%Y')
+        else:
+            try:
+                parsed_date = datetime.strptime(check_in_date_str, '%d/%m/%Y')
+            except ValueError:
+                try:
+                    parsed_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+                except ValueError:
+                    return redirect(url_for('error_page'))
+
+            check_in_date = parsed_date.strftime('%d/%m/%Y')
+
+        query_date = check_in_date
+
+        deluxe_room = db.room_prices.find_one({"date": query_date, "room_type": "Deluxe"})
+        deluxe_family_room = db.room_prices.find_one({"date": query_date, "room_type": "Family Deluxe"})
+
+        return render_template('user/room/rooms.html',
+                            user_info=user_info,
+                            deluxe_room=deluxe_room, 
+                            deluxe_family_room=deluxe_family_room, 
+                            format_currency=format_currency, 
+                            today=today, 
+                            tanggal_cek_in=tanggal_cek_in)
     else:
         return redirect(url_for('login'))
 
@@ -258,11 +305,11 @@ def user_deluxe_room():
     else:
         return redirect(url_for('login'))
 
-@app.route('/user/rooms/deluxe_family', methods=['GET'])
+@app.route('/user/rooms/family-deluxe', methods=['GET'])
 def user_deluxe_family():
     user_info = get_user_info()
     if user_info:
-        return render_template('user/room/deluxe_family.html', user_info=user_info)
+        return render_template('user/room/family_room.html', user_info=user_info)
     else:
         return redirect(url_for('login'))
 
@@ -456,6 +503,7 @@ def give_review(booking_id):
 
             db.reviews.insert_one({
                 'booking_id': booking_id,
+                'booking_code': booking['booking_code'],
                 'email': email,
                 'full_name': user_info['full_name'],  # Add user full name
                 'rating': rating,
@@ -631,7 +679,6 @@ def payment_token(booking_code):
     logger.info(f'Received payment token request for booking_code: {booking_code}')
     booking = db.deluxe_booking.find_one({'booking_code': booking_code}) or db.family_deluxe_booking.find_one({'booking_code': booking_code})
     if booking:
-        # Prepare item details based on booking data
         item_details = [
             {
                 'id': booking_code,
@@ -653,7 +700,7 @@ def payment_token(booking_code):
         payload = {
             'transaction_details': transaction_details,
             'customer_details': customer_details,
-            'item_details': item_details  # Include item details in the payload
+            'item_details': item_details
         }
         headers = {
             'Authorization': 'Basic ' + base64.b64encode((MIDTRANS_SERVER_KEY + ':').encode()).decode(),
