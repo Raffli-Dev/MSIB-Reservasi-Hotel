@@ -74,7 +74,10 @@ def handle_exception(e):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home/index.html')
+    # Ambil ulasan dari database
+    reviews = list(db.reviews.find().sort('created_at', -1))  # Mengambil semua ulasan dan mengurutkan berdasarkan tanggal
+    return render_template('home/index.html', reviews=reviews)
+
 
 @app.route('/rooms', methods=['GET'])
 def rooms():
@@ -454,10 +457,12 @@ def give_review(booking_id):
             db.reviews.insert_one({
                 'booking_id': booking_id,
                 'email': email,
+                'full_name': user_info['full_name'],  # Add user full name
                 'rating': rating,
                 'review': review,
                 'tipe_kamar': room_type,
-                'created_at': datetime.now(wib)
+                'created_at': datetime.now(wib),
+                'profile_picture_url': user_info.get('profile_picture_url', '/static/img/uploads/profile/profile_placeholder.png'),  # Add profile picture URL
             })
 
             flash('Ulasan berhasil disimpan', 'success')
@@ -466,7 +471,7 @@ def give_review(booking_id):
         return render_template('user/reservasi/give_review.html', user_info=user_info, booking=booking)
     else:
         return redirect(url_for('login_user'))
-    
+        
 #handle halaman error user
 @app.route('/error')
 def error_page():
