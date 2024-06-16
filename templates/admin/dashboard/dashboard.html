@@ -24,7 +24,6 @@
 
     <div class="container mt-5" data-aos="fade-up">
         <div class="row">
-            <!-- Kartu 1 -->
             <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
                 <div class="card">
                     <div class="card-body">
@@ -36,7 +35,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Kartu 5 -->
             <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="card">
                     <div class="card-body">
@@ -48,31 +46,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Kartu 6 -->
-            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Menunggu Pembayaran</h5>
-                        <h6 class="card-title">Deluxe</h6>
-                        <p class="card-text">{{ data.pending_payments | default(0) }}</p>
-                        <h6 class="card-title">Family Deluxe</h6>
-                        <p class="card-text">{{ data.pending_payments_family_deluxe | default(0) }}</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Kartu 10 -->
-            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Menunggu Konfirmasi</h5>
-                        <h6 class="card-title">Deluxe</h6>
-                        <p class="card-text">{{ data.pending_confirmations | default(0) }}</p>
-                        <h6 class="card-title">Family Deluxe</h6>
-                        <p class="card-text">{{ data.pending_confirmations_family_deluxe | default(0) }}</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Kartu 11 -->
             <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="card">
                     <div class="card-body">
@@ -81,30 +54,6 @@
                         <p class="card-text">{{ data.accepted_bookings | default(0) }}</p>
                         <h6 class="card-title">Family Deluxe</h6>
                         <p class="card-text">{{ data.accepted_bookings_family_deluxe | default(0) }}</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Kartu 12 -->
-            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="600">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Booking Ditolak</h5>
-                        <h6 class="card-title">Deluxe</h6>
-                        <p class="card-text">{{ data.rejected_bookings | default(0) }}</p>
-                        <h6 class="card-title">Family Deluxe</h6>
-                        <p class="card-text">{{ data.rejected_bookings_family_deluxe | default(0) }}</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Kartu 13 -->
-            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="700">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Booking Dibatalkan</h5>
-                        <h6 class="card-title">Deluxe</h6>
-                        <p class="card-text">{{ data.cancelled_bookings | default(0) }}</p>
-                        <h6 class="card-title">Family Deluxe</h6>
-                        <p class="card-text">{{ data.cancelled_bookings_family_deluxe | default(0) }}</p>
                     </div>
                 </div>
             </div>
@@ -191,14 +140,14 @@
             const rejectedBookingsFamilyDeluxe = {{ data.rejected_bookings_family_deluxe | default(0) | tojson }};
             const cancelledBookingsFamilyDeluxe = {{ data.cancelled_bookings_family_deluxe | default(0) | tojson }};
 
-            // Chart.js Doughnut Chart Perbandingan Status Booking Deluxe
+            // Chart.js Pie Chart Perbandingan Jumlah Tamu
             const statusComparisonDeluxeCtx = document.getElementById('statusComparisonDeluxeChart').getContext('2d');
-            const statusComparisonDeluxeChart = new Chart(statusComparisonDeluxeCtx, {
-                type: 'doughnut',
+            const statusComparisonDeluxeChart = new Chart(statusComparisonDeluxeCtx{
+                type: 'pie',
                 data: {
-                    labels: ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Booking Diterima', 'Booking Ditolak', 'Booking Dibatalkan'],
+                    labels: ['Tamu Deluxe', 'Tamu Family Deluxe'],
                     datasets: [{
-                        data: [pendingPaymentsDeluxe, pendingConfirmationsDeluxe, acceptedBookingsDeluxe, rejectedBookingsDeluxe, cancelledBookingsDeluxe],
+                        data: [acceptedBookingsDeluxe, acceptedBookingsFamilyDeluxe],
                         backgroundColor: [
                             'rgba(255, 159, 64, 1)',
                             'rgba(75, 192, 192, 1)',
@@ -217,34 +166,6 @@
                     }]
                 }
             });
-
-            // Chart.js Doughnut Chart Perbandingan Status Booking Family Deluxe
-            const statusComparisonFamilyDeluxeCtx = document.getElementById('statusComparisonFamilyDeluxeChart').getContext('2d');
-            const statusComparisonFamilyDeluxeChart = new Chart(statusComparisonFamilyDeluxeCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Booking Diterima', 'Booking Ditolak', 'Booking Dibatalkan'],
-                    datasets: [{
-                        data: [pendingPaymentsFamilyDeluxe, pendingConfirmationsFamilyDeluxe, acceptedBookingsFamilyDeluxe, rejectedBookingsFamilyDeluxe, cancelledBookingsFamilyDeluxe],
-                        backgroundColor: [
-                            'rgba(255, 159, 64, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 159, 64, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                }
-            });
-        });
     </script>
 </body>
 </html>

@@ -23,6 +23,7 @@ locale.setlocale(locale.LC_ALL, '')
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = 'static/img/uploads/profile'
+app.config['UPLOAD_Gallery'] = 'static/img/uploads/gallery'
 app.config['MAX_CONTENT_PATH'] = 1 * 1024 * 1024  # Max Upload 16mb
 app.secret_key = 'supersecretkey'
 
@@ -126,7 +127,8 @@ def facilities():
 
 @app.route('/gallery', methods=['GET'])
 def gallery():
-    return render_template('gallery/gallery.html')
+    gallery = list(db.gallery.find())
+    return render_template('gallery/gallery.html', gallery=gallery)
 
 @app.route('/contact', methods=['GET'])
 def contact():
@@ -273,7 +275,8 @@ def user_facilities():
 def user_gallery():
     user_info = get_user_info()
     if user_info:
-        return render_template('user/gallery/gallery.html', user_info=user_info)
+        gallery = list(db.gallery.find())
+        return render_template('user/gallery/gallery.html', gallery=gallery)
     else:
         return redirect(url_for('login'))
 
@@ -994,20 +997,20 @@ def admin_dashboard():
     if admin_info:
         # Mengambil data dari database
         # Data dari tabel deluxe_booking
-        revenue_deluxe = sum(booking['harga_total'] for booking in db.deluxe_booking.find({'$or': [{'status': 'pesanan diterima'}, {'status': 'menunggu konfirmasi'}]}))
-        total_guests_deluxe = db.deluxe_booking.count_documents({'status': 'pesanan diterima'})
+        revenue_deluxe = sum(booking['harga_total'] for booking in db.deluxe_booking.find({'$or': [{'status': 'Pembayaran Berhasil'}, {'status': 'menunggu konfirmasi'}]}))
+        total_guests_deluxe = db.deluxe_booking.count_documents({'status': 'Pembayaran Berhasil'})
         pending_payments_deluxe = db.deluxe_booking.count_documents({'status': 'menunggu pembayaran'})
         pending_confirmations_deluxe = db.deluxe_booking.count_documents({'status': 'menunggu konfirmasi'})
-        accepted_bookings_deluxe = db.deluxe_booking.count_documents({'status': 'pesanan diterima'})
+        accepted_bookings_deluxe = db.deluxe_booking.count_documents({'status': 'Pembayaran Berhasil'})
         rejected_bookings_deluxe = db.deluxe_booking.count_documents({'status': 'pesanan ditolak'})
         cancelled_bookings_deluxe = db.deluxe_booking.count_documents({'status': 'dibatalkan'})
 
         # Data dari tabel family_deluxe_booking
-        revenue_family_deluxe = sum(booking['harga_total'] for booking in db.family_deluxe_booking.find({'$or': [{'status': 'pesanan diterima'}, {'status': 'menunggu konfirmasi'}]}))
-        total_guests_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'pesanan diterima'})
+        revenue_family_deluxe = sum(booking['harga_total'] for booking in db.family_deluxe_booking.find({'$or': [{'status': 'Pembayaran Berhasil'}, {'status': 'menunggu konfirmasi'}]}))
+        total_guests_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'Pembayaran Berhasil'})
         pending_payments_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'menunggu pembayaran'})
         pending_confirmations_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'menunggu konfirmasi'})
-        accepted_bookings_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'pesanan diterima'})
+        accepted_bookings_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'Pembayaran Berhasil'})
         rejected_bookings_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'pesanan ditolak'})
         cancelled_bookings_family_deluxe = db.family_deluxe_booking.count_documents({'status': 'dibatalkan'})
 
@@ -1115,6 +1118,83 @@ def admin_upload_photo():
         return redirect(url_for('admin_profile'))
     else:
         return redirect(url_for('admin_login'))
+
+@app.route('/admin/gallery/upload_photo', methods=['GET', 'POST'])
+def admin_upload_gallery():
+    admin_info = get_admin_info()
+    if admin_info:        
+        if request.method == 'POST':
+            if 'gallery_picture' in request.files:
+                gallery_picture = request.files['gallery_picture']
+                if gallery_picture:
+                    filename = secure_filename(gallery_picture.filename)
+                    gallery_picture_path = os.path.join(app.config['UPLOAD_Gallery'], filename)
+                    gallery_picture.save(gallery_picture_path)
+                    
+                    gallery_picture_url = url_for('static', filename='img/uploads/gallery/' + filename)
+                    db.gallery.insert_one({'gallery_picture_url': gallery_picture_url})
+                    flash('Gambar berhasil ditambahkan!', 'success')
+                    return redirect(url_for('admin_gallery'))
+
+        return render_template('admin/gallery/upload_gallery.html', admin_info=admin_info)
+    else:
+        return redirect(url_for('admin_login'))
+
+@app.route('/admin/gallery', methods=['GET'])
+def admin_gallery():
+    admin_info = get_admin_info()
+    if admin_info:
+        page = int(request.args.get('page', 1))
+        per_page = 5
+        gallery = list(db.gallery.find().skip((page - 1) * per_page).limit(per_page))
+        total_items = db.gallery.count_documents({})
+        total_pages = (total_items + per_page - 1) // per_page
+        return render_template('admin/gallery/gallery.html',admin_info=admin_info, gallery=gallery, page=page, total_pages=total_pages, total_items=total_items)
+    else:
+        return redirect(url_for('admin_login'))
+
+@app.route('/admin/gallery/edit/<gallery_id>', methods=['GET', 'POST'])
+def admin_edit_gallery(gallery_id):
+    admin_info = get_admin_info()
+    if admin_info:
+        if request.method == 'POST':
+            if 'gallery_picture' in request.files:
+                gallery_picture = request.files['gallery_picture']
+                if gallery_picture:
+                    filename = secure_filename(gallery_picture.filename)
+                    gallery_picture_path = os.path.join(app.config['UPLOAD_Gallery'], filename)
+                    gallery_picture.save(gallery_picture_path)
+                    
+                    gallery_picture_url = url_for('static', filename='img/uploads/gallery/' + filename)
+                    db.gallery.update_one({'_id': ObjectId(gallery_id)}, {'$set': {'gallery_picture_url': gallery_picture_url}})
+        
+        gallery_item = db.gallery.find_one({'_id': ObjectId(gallery_id)})
+        return render_template('admin/gallery/edit_gallery.html', admin_info=admin_info, gallery_item=gallery_item)
+    else:
+        return redirect(url_for('admin_login'))
+
+@app.route('/admin/delete_gallery', methods=['POST'])
+def admin_delete_gallery():
+    gallery_id = request.form.get('gallery_id')
+    if gallery_id:
+        result = db.gallery.delete_one({'_id': ObjectId(gallery_id)})
+        if result.deleted_count > 0:
+            return jsonify({'result': 'success'})
+        else:
+            return jsonify({'result': 'error', 'msg': 'Gagal menghapus foto.'})
+    return jsonify({'result': 'error', 'msg': 'ID foto tidak valid.'})
+
+@app.route('/admin/bulk_delete_gallery', methods=['POST'])
+def admin_bulk_delete_gallery():
+    gallery_ids = request.form.getlist('gallery_ids[]')
+    if gallery_ids:
+        object_ids = [ObjectId(gallery_id) for gallery_id in gallery_ids]
+        result = db.gallery.delete_many({'_id': {'$in': object_ids}})
+        if result.deleted_count > 0:
+            return jsonify({'result': 'success'})
+        else:
+            return jsonify({'result': 'error', 'msg': 'Gagal menghapus foto.'})
+    return jsonify({'result': 'error', 'msg': 'Tidak ada ID foto yang valid.'})
 
 @app.route('/admin/user', methods=['GET'])
 def admin_user():
