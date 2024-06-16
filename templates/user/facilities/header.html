@@ -13,6 +13,7 @@
                 <li class="nav-item active"><a href="{{ url_for('user_facilities') }}" class="nav-link">Fasilitas</a></li>
                 <li class="nav-item"><a href="{{ url_for('user_gallery') }}" class="nav-link">Galeri</a></li>
                 <li class="nav-item"><a href="{{ url_for('user_contact') }}" class="nav-link">Kontak</a></li>
+                <li class="nav-item"><a href="{{ url_for('user_book') }}" class="nav-link">Pesan Kamar</a></li>
                 {% if user_info %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -25,10 +26,6 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url_for('logout') }}">Keluar</a>
                     </div>
-                </li>
-                <li class="nav-item" style="margin-top: 10px;">
-                    <button type="button" class="btn btn-info"
-                        onclick="location.href='{{ url_for('user_book') }}'">Pesan Kamar</button>
                 </li>
                 {% else %}
                 <li class="nav-item">

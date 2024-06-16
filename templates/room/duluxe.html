@@ -4,109 +4,79 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,600,700&display=swap" rel="stylesheet">
+    {% include 'home/head_import.html' %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/open-iconic-bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/animate.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/owl.theme.default.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/magnific-popup.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/aos.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/ionicons.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/bootstrap-datepicker.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/jquery.timepicker.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/flaticon.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/icomoon.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/style.css') }}">
   </head>
   <body>
-    {% include 'home/header_indo.html' %}
-		<div class="hero-wrap" style="background-image: url('../../static/img/room/deluxe/deluxe-img.jpg');">
+    {% include 'room/header_indo.html' %}
+
+    <div class="hero-wrap" style="background-image: url('../../static/img/home/images/galeri.jpg');">
       <div class="overlay"></div>
       <div class="container">
         <div class="row no-gutters slider-text d-flex align-itemd-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center d-flex align-items-end justify-content-center">
           	<div class="text">
-	            <p class="breadcrumbs mb-2"><span class="mr-2"><a href="{{ url_for('home') }}">Home</a></span> <span class="mr-2"><a href="{{ url_for('rooms') }}">Rooms</a></span> <span>Rooms Single</span></p>
-	            <h1 class="mb-4 bread">Rooms Details</h1>
+              <p class="breadcrumbs mb-2"><span class="mr-2"><a href="{{ url_for('user_index') }}">Beranda</a></span> <span class="mr-2"><a href="{{ url_for('rooms') }}">Kamar</a></span> <span>Kamar Deluxe</span></p>
+              <h1 class="mb-4 bread">Rincian Kamar</h1>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+    
     <section class="ftco-section">
       <div class="container">
         <div class="row">
           <div class="col-lg-8">
-          	<div class="row">
-          		<div class="col-md-12 ftco-animate">
-          			<div class="single-slider owl-carousel">
-          				<div class="item">
-          					<div class="room-img" style="background-image:url('../../static/img/room/deluxe/kamar-deluxe1.jpg');"></div>
-          				</div>
-          				<div class="item">
-          					<div class="room-img" style="background-image:url('../../static/img/room/deluxe/kamar-deluxe2.jpg');"></div>
-          				</div>
-          				<div class="item">
-          					<div class="room-img" style="background-image:url('../../static/img/room/deluxe/kamar-deluxe3.jpg');"></div>
-          				</div>
-          			</div>
-          		</div>
-          		<div class="col-md-12 room-single mt-4 mb-5 ftco-animate">
-          			<h2 class="mb-4">Kamar Deluxe</h2>
+            <div class="row">
+              <div class="col-md-12 ftco-animate">
+                <div class="single-slider owl-carousel">
+                  <div class="item">
+                    <div class="room-img" style="background-image:url('../../static/img/room/deluxe/kamar-deluxe1.jpg');"></div>
+                  </div>
+                  <div class="item">
+                    <div class="room-img" style="background-image:url('../../static/img/room/deluxe/kamar-deluxe2.jpg');"></div>
+                  </div>
+                  <div class="item">
+                    <div class="room-img" style="background-image:url('../../static/img/room/deluxe/kamar-deluxe3.jpg');"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 room-single mt-4 mb-5 ftco-animate">
+                <h2 class="mb-4">Kamar Deluxe</h2>
                 <p style="color: #555;">Kamar Deluxe kami menawarkan kenyamanan dan kemewahan dengan desain modern dan fasilitas lengkap. Nikmati suasana yang tenang dan pemandangan yang indah dari kamar Anda.</p>
                 <div class="d-md-flex mt-5 mb-5">
-    							<ul class="list">
-	    							<li><span>Max:</span> 3 Persons</li>
-	    							<li><span>Size:</span> 45 m2</li>
-	    						</ul>
-	    						<ul class="list ml-md-5">
-	    							<li><span>View:</span> Sea View</li>
-	    							<li><span>Bed:</span> 1</li>
-	    						</ul>
-    						</div>
+                  <ul class="list">
+                    <li style="color: #555;"><span>Maximal:</span> 2 Orang</li>
+                    <li style="color: #555;"><span>Ukuran:</span> 18 m2</li>
+                  </ul>
+                  <ul class="list ml-md-5">
+                    <li style="color: #555;"><span>Kasur:</span> Single atau Double Bed</li>
+                  </ul>
+                </div>
                 <p style="color: #555;">Kamar Deluxe dilengkapi dengan berbagai fasilitas modern termasuk AC, TV layar datar, Wi-Fi gratis, dan kamar mandi pribadi dengan shower air panas. Nikmati juga layanan kamar yang tersedia 24 jam untuk kenyamanan Anda.</p>
-          		</div>
-          	</div>
-          </div> <!-- .col-md-8 -->
+              </div>
+            </div>
+          </div> 
           <div class="col-lg-4 sidebar ftco-animate pl-md-5">
             <!-- ini bagian Duluxe Deskripsi Promosi -->
              <!-- End Description -->
             <div class="sidebar-box ftco-animate">
               <h3>Tingkatkan Pengalaman Menginap Anda dengan Kamar Deluxe</h3>
-              <strong>Harga Spesial untuk Anda!</strong>
-              <p>Nikmati malam yang sempurna di kamar Deluxe kami, lengkap dengan fasilitas mewah dan layanan istimewa. Pesan sekarang dan rasakan kenyamanan serta kemewahan yang sebenarnya!</p>
+              <strong style="color: #555;">Harga Spesial untuk Anda!</strong>
+              <p style="color: #555;">Nikmati malam yang sempurna di kamar Deluxe kami, lengkap dengan fasilitas mewah dan layanan istimewa. Pesan sekarang dan rasakan kenyamanan serta kemewahan yang sebenarnya!</p>
             </div>
           </div>
         </div>
       </div>
     </section> <!-- .section -->
 
-
     {% include 'home/footer.html' %}
-    
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+    {% include 'home/script_import.html' %}
   
-
-  <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
-
-  <script src="{{ url_for('static', filename='script/js/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/jquery-migrate-3.0.1.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/popper.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/jquery.easing.1.3.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/jquery.waypoints.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/jquery.stellar.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/owl.carousel.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/jquery.magnific-popup.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/aos.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/jquery.animateNumber.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/bootstrap-datepicker.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/scrollax.min.js') }}"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-  <script src="{{ url_for('static', filename='script/js/google-map.js') }}"></script>
-  <script src="{{ url_for('static', filename='script/js/main.js') }}"></script>
-    
   </body>
 </html>
