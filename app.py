@@ -534,42 +534,46 @@ def error_page():
 @app.route('/user/book', methods=['GET'])
 def user_book():
     user_info = get_user_info()
-    check_in_date_str = request.args.get('check_in_date')
-    today = datetime.today().date()
-    tanggal_cek_in = None
+    if user_info:
 
-    if check_in_date_str:
-        try:
-            tanggal_cek_in = datetime.strptime(check_in_date_str, '%Y-%m-%d').date()
-        except ValueError:
-            return redirect(url_for('error_page'))
+        check_in_date_str = request.args.get('check_in_date')
+        today = datetime.today().date()
+        tanggal_cek_in = None
 
-    if not check_in_date_str:
-        check_in_date = datetime.today().strftime('%d/%m/%Y')
-    else:
-        try:
-            parsed_date = datetime.strptime(check_in_date_str, '%d/%m/%Y')
-        except ValueError:
+        if check_in_date_str:
             try:
-                parsed_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+                tanggal_cek_in = datetime.strptime(check_in_date_str, '%Y-%m-%d').date()
             except ValueError:
                 return redirect(url_for('error_page'))
 
-        check_in_date = parsed_date.strftime('%d/%m/%Y')
+        if not check_in_date_str:
+            check_in_date = datetime.today().strftime('%d/%m/%Y')
+        else:
+            try:
+                parsed_date = datetime.strptime(check_in_date_str, '%d/%m/%Y')
+            except ValueError:
+                try:
+                    parsed_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+                except ValueError:
+                    return redirect(url_for('error_page'))
 
-    query_date = check_in_date
+            check_in_date = parsed_date.strftime('%d/%m/%Y')
 
-    deluxe_room = db.room_prices.find_one({"date": query_date, "room_type": "Deluxe"})
-    deluxe_family_room = db.room_prices.find_one({"date": query_date, "room_type": "Family Deluxe"})
+        query_date = check_in_date
 
-    return render_template('user/book/book.html', 
-                           user_info=user_info, 
-                           deluxe_room=deluxe_room, 
-                           deluxe_family_room=deluxe_family_room, 
-                           format_currency=format_currency, 
-                           today=today, 
-                           tanggal_cek_in=tanggal_cek_in)  
-  
+        deluxe_room = db.room_prices.find_one({"date": query_date, "room_type": "Deluxe"})
+        deluxe_family_room = db.room_prices.find_one({"date": query_date, "room_type": "Family Deluxe"})
+
+        return render_template('user/book/book.html', 
+                            user_info=user_info, 
+                            deluxe_room=deluxe_room, 
+                            deluxe_family_room=deluxe_family_room, 
+                            format_currency=format_currency, 
+                            today=today, 
+                            tanggal_cek_in=tanggal_cek_in)  
+    else:
+        return redirect(url_for('login'))
+    
 @app.route('/user/room/booking/deluxe-room', methods=['GET', 'POST'])
 def user_deluxe_book():
     user_info = get_user_info()  # Function to get user information

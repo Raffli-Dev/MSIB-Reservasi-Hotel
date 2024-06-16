@@ -310,9 +310,14 @@
             var roomType = document.getElementById('room').value;
             
             if (checkinDate) {
-                window.location.href = '/user_book?check_in_date=' + checkinDate + '&room=' + roomType;
+                window.location.href = '/book?check_in_date=' + checkinDate + '&room=' + roomType;
             } else {
-                alert('Silakan pilih tanggal check-in terlebih dahulu.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Silakan pilih tanggal check-in terlebih dahulu.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     </script>
