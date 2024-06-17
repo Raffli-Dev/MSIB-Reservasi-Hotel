@@ -1038,6 +1038,7 @@ def admin_logout():
     #session.pop('admin_logged_in', None)
     #session.pop('admin_email', None)
     #session.pop('admin_full_name', None)
+    
     session.clear()
     return redirect(url_for('login_admin'))
 
@@ -1122,7 +1123,9 @@ def admin_profile():
 
 @app.route('/admin/profile/edit', methods=['GET', 'POST'])
 def admin_edit_profile():
-    if 'logged_in' in session:
+    admin_info = get_admin_info()
+
+    if admin_info:  
         email = session['email']
         admin_info = db.admin.find_one({'email': email})
 
@@ -1157,7 +1160,9 @@ def admin_edit_profile():
 
 @app.route('/admin/profile/upload_photo', methods=['POST'])
 def admin_upload_photo():
-    if 'logged_in' in session:
+    admin_info = get_admin_info()
+
+    if admin_info:        
         email = session['email']
         if 'profile_picture' in request.files:
             profile_picture = request.files['profile_picture']
@@ -1231,27 +1236,37 @@ def admin_edit_gallery(gallery_id):
 
 @app.route('/admin/delete_gallery', methods=['POST'])
 def admin_delete_gallery():
-    gallery_id = request.form.get('gallery_id')
-    if gallery_id:
-        result = db.gallery.delete_one({'_id': ObjectId(gallery_id)})
-        if result.deleted_count > 0:
-            return jsonify({'result': 'success'})
-        else:
-            return jsonify({'result': 'error', 'msg': 'Gagal menghapus foto.'})
-    return jsonify({'result': 'error', 'msg': 'ID foto tidak valid.'})
+    admin_info = get_admin_info()
 
+    if admin_info:
+        gallery_id = request.form.get('gallery_id')
+        if gallery_id:
+            result = db.gallery.delete_one({'_id': ObjectId(gallery_id)})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus foto.'})
+        return jsonify({'result': 'error', 'msg': 'ID foto tidak valid.'})
+    else:
+        return redirect(url_for('admin_login'))
+    
 @app.route('/admin/bulk_delete_gallery', methods=['POST'])
 def admin_bulk_delete_gallery():
-    gallery_ids = request.form.getlist('gallery_ids[]')
-    if gallery_ids:
-        object_ids = [ObjectId(gallery_id) for gallery_id in gallery_ids]
-        result = db.gallery.delete_many({'_id': {'$in': object_ids}})
-        if result.deleted_count > 0:
-            return jsonify({'result': 'success'})
-        else:
-            return jsonify({'result': 'error', 'msg': 'Gagal menghapus foto.'})
-    return jsonify({'result': 'error', 'msg': 'Tidak ada ID foto yang valid.'})
+    admin_info = get_admin_info()
 
+    if admin_info:
+        gallery_ids = request.form.getlist('gallery_ids[]')
+        if gallery_ids:
+            object_ids = [ObjectId(gallery_id) for gallery_id in gallery_ids]
+            result = db.gallery.delete_many({'_id': {'$in': object_ids}})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus foto.'})
+        return jsonify({'result': 'error', 'msg': 'Tidak ada ID foto yang valid.'})
+    else:
+        return redirect(url_for('admin_login'))
+    
 @app.route('/admin/user', methods=['GET'])
 def admin_user():
     admin_info = get_admin_info()
@@ -1274,27 +1289,35 @@ def admin_user():
 
 @app.route('/admin/delete_user', methods=['POST'])
 def admin_delete_user():
-    user_id = request.form.get('user_id')
-    if user_id:
-        result = db.users.delete_one({'_id': ObjectId(user_id)})
-        if result.deleted_count > 0:
-            return jsonify({'result': 'success'})
-        else:
-            return jsonify({'result': 'error', 'msg': 'Gagal menghapus pengguna.'})
-    return jsonify({'result': 'error', 'msg': 'ID pengguna tidak valid.'})
-
+    admin_info = get_admin_info()
+    if admin_info:
+        user_id = request.form.get('user_id')
+        if user_id:
+            result = db.users.delete_one({'_id': ObjectId(user_id)})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus pengguna.'})
+        return jsonify({'result': 'error', 'msg': 'ID pengguna tidak valid.'})
+    else:
+        return redirect(url_for('login_admin'))
+    
 @app.route('/admin/bulk_delete_users', methods=['POST'])
 def admin_bulk_delete_users():
-    user_ids = request.form.getlist('user_ids[]')
-    if user_ids:
-        object_ids = [ObjectId(user_id) for user_id in user_ids]
-        result = db.users.delete_many({'_id': {'$in': object_ids}})
-        if result.deleted_count > 0:
-            return jsonify({'result': 'success'})
-        else:
-            return jsonify({'result': 'error', 'msg': 'Gagal menghapus pengguna.'})
-    return jsonify({'result': 'error', 'msg': 'Tidak ada ID pengguna yang valid.'})
-
+    admin_info = get_admin_info()
+    if admin_info:
+        user_ids = request.form.getlist('user_ids[]')
+        if user_ids:
+            object_ids = [ObjectId(user_id) for user_id in user_ids]
+            result = db.users.delete_many({'_id': {'$in': object_ids}})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus pengguna.'})
+        return jsonify({'result': 'error', 'msg': 'Tidak ada ID pengguna yang valid.'})
+    else:
+        return redirect(url_for('login_admin'))
+    
 @app.route('/admin/user/profile/<user_id>', methods=['GET', 'POST'])
 def admin_edit_user_profile(user_id):
     if 'logged_in' in session:
@@ -1410,27 +1433,35 @@ def admin_edit_room(room_id):
 
 @app.route('/admin/room/delete', methods=['POST'])
 def admin_delete_room():
-    room_id = request.form.get('room_id')
-    if room_id:
-        result = db.room_prices.delete_one({'_id': ObjectId(room_id)})
-        if result.deleted_count > 0:
-            return jsonify({'result': 'success'})
-        else:
-            return jsonify({'result': 'error', 'msg': 'Gagal menghapus kamar.'})
-    return jsonify({'result': 'error', 'msg': 'ID kamar tidak valid.'})
-
+    admin_info = get_admin_info()
+    if admin_info:
+        room_id = request.form.get('room_id')
+        if room_id:
+            result = db.room_prices.delete_one({'_id': ObjectId(room_id)})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus kamar.'})
+        return jsonify({'result': 'error', 'msg': 'ID kamar tidak valid.'})
+    else:
+        return redirect(url_for('login_admin'))
+    
 @app.route('/admin/bulk_delete_rooms', methods=['POST'])
 def admin_bulk_delete_rooms():
-    room_ids = request.form.getlist('room_ids[]')
-    if room_ids:
-        object_ids = [ObjectId(room_id) for room_id in room_ids]
-        result = db.room_prices.delete_many({'_id': {'$in': object_ids}})
-        if result.deleted_count > 0:
-            return jsonify({'result': 'success'})
-        else:
-            return jsonify({'result': 'error', 'msg': 'Gagal menghapus kamar.'})
-    return jsonify({'result': 'error', 'msg': 'Tidak ada ID kamar yang valid.'})
-
+    admin_info = get_admin_info()
+    if admin_info:
+        room_ids = request.form.getlist('room_ids[]')
+        if room_ids:
+            object_ids = [ObjectId(room_id) for room_id in room_ids]
+            result = db.room_prices.delete_many({'_id': {'$in': object_ids}})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus kamar.'})
+        return jsonify({'result': 'error', 'msg': 'Tidak ada ID kamar yang valid.'})
+    else:
+        return redirect(url_for('login_admin'))
+    
 @app.route('/admin/rooms', methods=['GET'])
 def admin_room():
     admin_info = get_admin_info()
@@ -1465,9 +1496,8 @@ def admin_room():
 
 @app.route('/admin/room/add', methods=['GET', 'POST'])
 def admin_add_room():
-    if 'logged_in' in session:
-        admin_info = get_admin_info()
-        
+    admin_info = get_admin_info()
+    if admin_info:
         if request.method == 'POST':
             room_type = request.form.get('roomType')
             date = request.form.get('date')
@@ -1527,7 +1557,6 @@ def admin_guest():
         if booking_code_query:
             query['booking_code'] = {'$regex': booking_code_query, '$options': 'i'}
 
-        # Retrieve guests from both collections
         deluxe_guests = list(db.deluxe_booking.find(query)
                              .sort('created_at', -1)
                              .skip((page - 1) * entries_per_page)
@@ -1538,10 +1567,8 @@ def admin_guest():
                                     .skip((page - 1) * entries_per_page)
                                     .limit(entries_per_page))
 
-        # Combine the two lists
         guests = deluxe_guests + family_deluxe_guests
 
-        # Ensure created_at is a datetime object and sort the combined list by 'created_at' in descending order
         for guest in guests:
             if isinstance(guest['created_at'], str):
                 try:
@@ -1551,12 +1578,10 @@ def admin_guest():
 
         guests = sorted(guests, key=lambda x: x['created_at'], reverse=True)
 
-        # Calculate the total number of guests from both collections
         total_deluxe_guests = db.deluxe_booking.count_documents(query)
         total_family_deluxe_guests = db.family_deluxe_booking.count_documents(query)
         total_guests = total_deluxe_guests + total_family_deluxe_guests
 
-        # Calculate total pages
         total_pages = (total_guests + entries_per_page - 1) // entries_per_page
 
         return render_template('admin/guest/guest.html', 
