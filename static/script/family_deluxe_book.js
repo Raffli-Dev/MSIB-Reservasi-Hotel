@@ -151,7 +151,7 @@ function payNow(bookingCode) {
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            window.location.href = '/user/reservasi';
+                            window.location.href = '/user/book';
                         });
                     } else {
                         Swal.fire({

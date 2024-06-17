@@ -14,6 +14,8 @@ import locale
 import json
 import pytz
 from bson.errors import InvalidId
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -1607,7 +1609,6 @@ def admin_delete_guest(guest_id):
     else:
         return jsonify({'result': 'error', 'message': 'Unauthorized'}), 401
 
-@app.route('/admin/guest/delete_all', methods=['POST'])
 def delete_all_guests():
     try:
         # Hapus dari deluxe_booking jika status menunggu pembayaran atau dibatalkan
@@ -1625,9 +1626,22 @@ def delete_all_guests():
 
         # Cek apakah ada data yang terhapus dari salah satu koleksi
         if deluxe_result.deleted_count > 0 or family_deluxe_result.deleted_count > 0:
-            return jsonify({'result': 'success'})
+            logging.info("Deleted guests successfully.")
         else:
-            return jsonify({'result': 'error', 'message': 'Failed to delete guests or no matching data found'}), 400
+            logging.warning("No matching guests found to delete.")
+    except Exception as e:
+        logging.error(f"Error: {e}")
+
+# Scheduler untuk menjalankan delete_all_guests setiap satu menit
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=delete_all_guests, trigger="cron", hour=0, minute=0)
+scheduler.start()
+
+@app.route('/admin/guest/delete_all', methods=['POST'])
+def delete_all_guests_route():
+    try:
+        delete_all_guests()
+        return jsonify({'result': 'success'})
     except Exception as e:
         logging.error(f"Error: {e}")
         return jsonify({'result': 'error', 'message': 'An error occurred'}), 500
