@@ -151,7 +151,7 @@ def book():
     tanggal_cek_in = None
     if check_in_date_str:
         tanggal_cek_in = datetime.strptime(check_in_date_str, '%Y-%m-%d').date()
-    
+
     if not check_in_date:
         check_in_date = datetime.today().strftime('%d/%m/%Y')
     else:
@@ -162,12 +162,12 @@ def book():
             # If it fails, try to parse it in 'yyyy-mm-dd' format
             parsed_date = datetime.strptime(check_in_date, '%Y-%m-%d')
         check_in_date = parsed_date.strftime('%d/%m/%Y')
-    
+
     query_date = check_in_date
 
     deluxe_room = db.room_prices.find_one({"date": query_date, "room_type": "Deluxe"})
     deluxe_family_room = db.room_prices.find_one({"date": query_date, "room_type": "Family Deluxe"})
-    
+
     return render_template('book/book.html', deluxe_room=deluxe_room, deluxe_family_room=deluxe_family_room, format_currency=format_currency, today=today, tanggal_cek_in=tanggal_cek_in)
 
 @app.route('/sign_in', methods=['POST'])
@@ -347,7 +347,7 @@ def user_profile():
         return render_template('user/profile/profile.html', user_info=user_info, reviews=reviews)
     else:
         return redirect(url_for('login'))
-    
+
 @app.route('/delete_review/<review_id>', methods=['DELETE'])
 def delete_review(review_id):
     email = session.get('email')
@@ -421,7 +421,6 @@ def format_currency(value):
 
 # Timezone for Indonesia (Jakarta)
 wib = pytz.timezone('Asia/Jakarta')
-
 
 @app.route('/user/reservasi', methods=['GET'])
 def user_reservasi():
@@ -1036,6 +1035,10 @@ def admin_register():
 
 @app.route('/admin/logout')
 def admin_logout():
+    #session.pop('admin_logged_in', None)
+    #session.pop('admin_email', None)
+    #session.pop('admin_full_name', None)
+    
     session.clear()
     return redirect(url_for('login_admin'))
 
