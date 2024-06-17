@@ -15,8 +15,6 @@ import json
 import pytz
 from bson.errors import InvalidId
 
-
-
 locale.setlocale(locale.LC_ALL, '')
 
 
@@ -1609,6 +1607,31 @@ def admin_delete_guest(guest_id):
     else:
         return jsonify({'result': 'error', 'message': 'Unauthorized'}), 401
 
+@app.route('/admin/guest/delete_all', methods=['POST'])
+def delete_all_guests():
+    try:
+        # Hapus dari deluxe_booking jika status menunggu pembayaran atau dibatalkan
+        deluxe_result = db.deluxe_booking.delete_many({
+            'status': {'$in': ['menunggu pembayaran', 'dibatalkan']}
+        })
+
+        # Hapus dari family_deluxe_booking jika status menunggu pembayaran atau dibatalkan
+        family_deluxe_result = db.family_deluxe_booking.delete_many({
+            'status': {'$in': ['menunggu pembayaran', 'dibatalkan']}
+        })
+
+        logging.debug(f"Deluxe deleted count: {deluxe_result.deleted_count}")
+        logging.debug(f"Family Deluxe deleted count: {family_deluxe_result.deleted_count}")
+
+        # Cek apakah ada data yang terhapus dari salah satu koleksi
+        if deluxe_result.deleted_count > 0 or family_deluxe_result.deleted_count > 0:
+            return jsonify({'result': 'success'})
+        else:
+            return jsonify({'result': 'error', 'message': 'Failed to delete guests or no matching data found'}), 400
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        return jsonify({'result': 'error', 'message': 'An error occurred'}), 500
+        
 @app.route('/admin/guest/bulk_delete', methods=['POST'])
 def admin_bulk_delete_guests():
     if 'logged_in' in session:

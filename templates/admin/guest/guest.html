@@ -20,6 +20,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style/admin/css/user_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/admin/css/style.css') }}">
 
@@ -125,7 +127,7 @@
                                         badge-primary
                                     {% elif guest.status == 'menunggu konfirmasi' %}
                                         badge-warning
-                                    {% elif guest.status == 'pesanan diterima' %}
+                                    {% elif guest.status == 'Pembayaran Berhasil' %}
                                         badge-success
                                     {% elif guest.status == 'pesanan ditolak' %}
                                         badge-danger

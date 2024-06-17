@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../static/style/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -49,14 +49,13 @@
             <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Booking Diterima</h5>
-                        <h6 class="card-title">Deluxe</h6>
-                        <p class="card-text">{{ data.accepted_bookings | default(0) }}</p>
-                        <h6 class="card-title">Family Deluxe</h6>
-                        <p class="card-text">{{ data.accepted_bookings_family_deluxe | default(0) }}</p>
+                        <h5 class="card-title">Website</h5>
+                        <br>
+                        <a href="{{ url_for('home') }}" class="btn btn-primary">Klik di sini untuk melihat halaman website</a>
+                        <br><br><br>
                     </div>
                 </div>
-            </div>
+            </div>                    
         </div>
 
         <div class="row mt-4" data-aos="fade-up" data-aos-delay="800">
@@ -68,22 +67,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row mt-4" data-aos="fade-up" data-aos-delay="900">
             <div class="col-lg-6 col-md-12 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Perbandingan Status Booking Deluxe</h5>
-                        <canvas id="statusComparisonDeluxeChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-12 mb-4" data-aos="fade-up" data-aos-delay="1000">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Perbandingan Status Booking Family Deluxe</h5>
-                        <canvas id="statusComparisonFamilyDeluxeChart"></canvas>
+                        <h5 class="card-title">Perbandingan Tamu Deluxe dan Family Deluxe</h5>
+                        <canvas id="perbandinganTamu"></canvas>
                     </div>
                 </div>
             </div>
@@ -98,11 +86,9 @@
     <!-- AOS JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Initialize AOS
         AOS.init();
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Ensure data is defined
             const revenueDeluxe = {{ data.revenue | default(0) | tojson }};
             const revenueFamilyDeluxe = {{ data.revenue_family_deluxe | default(0) | tojson }};
 
@@ -126,28 +112,17 @@
                     }]
                 }
             });
-
-            // Data for Status Comparison Charts
-            const pendingPaymentsDeluxe = {{ data.pending_payments | default(0) | tojson }};
-            const pendingConfirmationsDeluxe = {{ data.pending_confirmations | default(0) | tojson }};
+            
             const acceptedBookingsDeluxe = {{ data.accepted_bookings | default(0) | tojson }};
-            const rejectedBookingsDeluxe = {{ data.rejected_bookings | default(0) | tojson }};
-            const cancelledBookingsDeluxe = {{ data.cancelled_bookings | default(0) | tojson }};
-
-            const pendingPaymentsFamilyDeluxe = {{ data.pending_payments_family_deluxe | default(0) | tojson }};
-            const pendingConfirmationsFamilyDeluxe = {{ data.pending_confirmations_family_deluxe | default(0) | tojson }};
             const acceptedBookingsFamilyDeluxe = {{ data.accepted_bookings_family_deluxe | default(0) | tojson }};
-            const rejectedBookingsFamilyDeluxe = {{ data.rejected_bookings_family_deluxe | default(0) | tojson }};
-            const cancelledBookingsFamilyDeluxe = {{ data.cancelled_bookings_family_deluxe | default(0) | tojson }};
 
-            // Chart.js Pie Chart Perbandingan Jumlah Tamu
-            const statusComparisonDeluxeCtx = document.getElementById('statusComparisonDeluxeChart').getContext('2d');
-            const statusComparisonDeluxeChart = new Chart(statusComparisonDeluxeCtx{
+            const statusComparisonDeluxeCtx = document.getElementById('perbandinganTamu').getContext('2d');
+            const perbandinganTamu = new Chart(statusComparisonDeluxeCtx, {
                 type: 'pie',
                 data: {
-                    labels: ['Tamu Deluxe', 'Tamu Family Deluxe'],
+                    labels: ['Deluxe', 'Family Deluxe'],
                     datasets: [{
-                        data: [acceptedBookingsDeluxe, acceptedBookingsFamilyDeluxe],
+                        data: [ acceptedBookingsDeluxe, acceptedBookingsFamilyDeluxe],
                         backgroundColor: [
                             'rgba(255, 159, 64, 1)',
                             'rgba(75, 192, 192, 1)',
@@ -166,6 +141,7 @@
                     }]
                 }
             });
+        });
     </script>
 </body>
 </html>
