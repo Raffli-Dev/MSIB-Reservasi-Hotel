@@ -1,23 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
     <title>Error 403 - Forbidden!</title>
-    <link rel="stylesheet" href="../../static/style/error_page.css">
-</head>
+    <link rel="stylesheet" href="../../static/style/error_page.css" />
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <img class="ops" src="../../../static/img/error_page/404.svg" />
-        <br />
-        <h3>Akses Ditolak!
-            <br /> Anda tidak memiliki izin untuk mengakses halaman ini.
-        </h3>
-        <br />
-        <a class="buton" href="{{ url_for('user_index') }}">Kembali Kehalaman Home</a>
+      <img class="ops" src="../../../static/img/error_page/404.svg" />
+      <br />
+      <h3>
+        Akses Ditolak! <br />
+        Anda tidak memiliki izin untuk mengakses halaman ini.
+      </h3>
+      <br />
+      <a class="buton" href="{{ url_for('user_index') }}"
+        >Kembali Kehalaman Home</a
+      >
     </div>
-</body>
-
+  </body>
 </html>

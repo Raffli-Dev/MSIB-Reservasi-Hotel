@@ -310,10 +310,8 @@
                 window.location.href = '/book?check_in_date=' + checkinDate + '&room=' + roomType;
             } else {
                 Swal.fire({
-                    title: 'Error!',
-                    text: 'Silakan pilih tanggal check-in terlebih dahulu.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
+                    icon: "info",
+                    title: "Silakan pilih tanggal check-in terlebih dahulu."
                 });
             }
         });
