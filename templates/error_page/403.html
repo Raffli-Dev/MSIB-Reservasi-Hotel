@@ -7,19 +7,20 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <title>Error 403 - Forbidden!</title>
-    <link rel="stylesheet" href="../../static/style/error_page.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/error_page.css') }}">
+
   </head>
 
   <body>
     <div class="container">
-      <img class="ops" src="../../../static/img/error_page/404.svg" />
+      <img class="ops" src="{{ url_for('static', filename='img/error_page/403.svg') }}" alt="Forbidden" />
       <br />
       <h3>
         Akses Ditolak! <br />
         Anda tidak memiliki izin untuk mengakses halaman ini.
       </h3>
       <br />
-      <a class="buton" href="{{ url_for('user_index') }}"
+      <a class="buton" href="{{ url_for('home') }}"
         >Kembali Kehalaman Home</a
       >
     </div>

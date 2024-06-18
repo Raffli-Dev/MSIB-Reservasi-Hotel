@@ -66,3 +66,34 @@ span a:hover {
         font-size: 14px;
     }
 }
+.ops {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+}
+
+@media (min-width: 576px) {
+    .ops {
+        width: 50%;
+    }
+}
+
+@media (min-width: 768px) {
+    .ops {
+        width: 50%;
+    }
+}
+
+@media (min-width: 992px) {
+    .ops {
+        width: 50%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .ops {
+        width: 30%;
+    }
+}

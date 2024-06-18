@@ -126,6 +126,11 @@ def rooms():
 def deluxe_room():
     return render_template('room/duluxe.html')
 
+@app.route('/faq')
+def faq():
+    faqs = db.faqs.find()
+    return render_template('faq/faq.html', faqs=faqs)
+
 @app.route('/rooms/family-deluxe', methods=['GET'])
 def deluxe_family():
     return render_template('room/family_room.html')
@@ -234,10 +239,18 @@ def register():
 
     return render_template('register/register.html')
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
+    # Cek pengaturan
+    setting = db.settings.find_one({'setting': 'login_enabled'})
+    login_enabled = setting['value'] if setting else False
+
+    if not login_enabled:
+        return render_template('error_page/error_setting.html', message="Halaman login dinonaktifkan."), 403
+
     msg = request.args.get("msg")
     return render_template("login/login.html", msg=msg)
+
 
 @app.route("/user/index")
 def user_index():
@@ -296,6 +309,11 @@ def user_rooms():
                             tanggal_cek_in=tanggal_cek_in)
     else:
         return redirect(url_for('login'))
+    
+@app.route('/user/faq')
+def user_faq():
+    faqs = db.faqs.find()
+    return render_template('user/faq/faq.html', faqs=faqs)
 
 @app.route('/user/rooms/deluxe', methods=['GET'])
 def user_deluxe_room():
@@ -1001,6 +1019,13 @@ def admin_login():
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def admin_register():
+    # Cek pengaturan
+    setting = db.settings.find_one({'setting': 'register_enabled'})
+    register_enabled = setting['value'] if setting else False
+    
+    if not register_enabled:
+        return redirect(url_for('error_admin'))
+    
     if request.method == 'POST':
         full_name = request.form.get('fullName')
         email = request.form.get('email')
@@ -1026,7 +1051,6 @@ def admin_register():
             'password': hashed_password,
             'role': role,
             'profile_picture_url': profile_picture_url
-            
         }
         db.admin.insert_one(user_data)
         return jsonify({'success': 'Pendaftaran berhasil!'}), 200
@@ -1035,10 +1059,6 @@ def admin_register():
 
 @app.route('/admin/logout')
 def admin_logout():
-    #session.pop('admin_logged_in', None)
-    #session.pop('admin_email', None)
-    #session.pop('admin_full_name', None)
-    
     session.clear()
     return redirect(url_for('login_admin'))
 
@@ -1780,6 +1800,115 @@ def admin_edit_family_guest(guest_id):
         return render_template('admin/guest/edit_family_guest.html', admin_info=admin_info, guest=guest)
     else:
         return redirect(url_for('login_admin'))
+
+@app.route('/admin/faq', methods=['GET'])
+def admin_faq():
+    admin_info = get_admin_info()
+    if admin_info:
+        search_query = request.args.get('search')
+        per_page = 5
+        page = int(request.args.get('page', 1))
+
+        if search_query:
+            faqs = list(db.faqs.find({'question': {'$regex': search_query, '$options': 'i'}}).skip((page - 1) * per_page).limit(per_page))
+            total_faqs = db.faqs.count_documents({'question': {'$regex': search_query, '$options': 'i'}})
+        else:
+            faqs = list(db.faqs.find().skip((page - 1) * per_page).limit(per_page))
+            total_faqs = db.faqs.count_documents({})
+
+        total_pages = (total_faqs + per_page - 1) // per_page
+        return render_template('admin/faq/faq.html', faqs=faqs, admin_info=admin_info, page=page, total_pages=total_pages, total_faqs=total_faqs)
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/admin/add_faq', methods=['GET', 'POST'])
+def admin_add_faq():
+    admin_info = get_admin_info()
+    if admin_info:
+        if request.method == 'POST':
+            question = request.form['question']
+            answer = request.form['answer']
+            db.faqs.insert_one({'pertanyaan': question, 'jawaban': answer, 'created_at': datetime.utcnow()})
+            return redirect(url_for('admin_faq'))
+        return render_template('admin/faq/add_faq.html', admin_info=admin_info)
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/admin/edit_faq/<faq_id>', methods=['GET', 'POST'])
+def admin_edit_faq(faq_id):
+    admin_info = get_admin_info()
+    if admin_info:
+        faq = db.faqs.find_one({'_id': ObjectId(faq_id)})
+        if request.method == 'POST':
+            question = request.form['question']
+            answer = request.form['answer']
+            db.faqs.update_one({'_id': ObjectId(faq_id)}, {'$set': {'pertanyaan': question, 'jawaban': answer}})
+            return redirect(url_for('admin_faq'))
+        return render_template('admin/faq/edit_faq.html', faq=faq, admin_info=admin_info)
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/admin/delete_faq', methods=['POST'])
+def admin_delete_faq():
+    admin_info = get_admin_info()
+    if admin_info:
+        faq_id = request.form.get('faq_id')
+        if faq_id:
+            result = db.faqs.delete_one({'_id': ObjectId(faq_id)})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus pertanyaan.'})
+        return jsonify({'result': 'error', 'msg': 'ID pertanyaan tidak valid.'})
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/admin/bulk_delete_faq', methods=['POST'])
+def admin_bulk_delete_faq():
+    admin_info = get_admin_info()
+    if admin_info:
+        faq_ids = request.form.getlist('faq_ids[]')
+        if faq_ids:
+            object_ids = [ObjectId(faq_id) for faq_id in faq_ids]
+            result = db.faqs.delete_many({'_id': {'$in': object_ids}})
+            if result.deleted_count > 0:
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'error', 'msg': 'Gagal menghapus pertanyaan.'})
+        return jsonify({'result': 'error', 'msg': 'Tidak ada ID pertanyaan yang valid.'})
+    else:
+        return redirect(url_for('login_admin'))
+
+#ini route untuk setting
+@app.route('/admin/settings', methods=['GET', 'POST'])
+def admin_settings():
+    admin_info = get_admin_info()
+    if admin_info:
+        if request.method == 'POST':
+            register_enabled = request.form.get('registerEnabled') == 'active'
+            login_enabled = request.form.get('loginEnabled') == 'active'
+            
+            # Save settings to database
+            db.settings.update_one({'setting': 'register_enabled'}, {'$set': {'value': register_enabled}}, upsert=True)
+            db.settings.update_one({'setting': 'login_enabled'}, {'$set': {'value': login_enabled}}, upsert=True)
+            
+            return redirect(url_for('admin_settings'))
+
+        # Fetch settings from database
+        register_setting = db.settings.find_one({'setting': 'register_enabled'})
+        login_setting = db.settings.find_one({'setting': 'login_enabled'})
+        
+        register_enabled = register_setting['value'] if register_setting else None
+        login_enabled = login_setting['value'] if login_setting else None
+        
+        return render_template('admin/settings/settings.html', register_enabled=register_enabled, login_enabled=login_enabled, admin_info=admin_info)
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/error/admin')
+def error_admin():
+    return render_template('error_page/error_setting.html', message="Registrasi admin dinonaktifkan")
+
 
 if __name__ == '__main__':
     app.run("0.0.0.0", port=5000, debug=True)
