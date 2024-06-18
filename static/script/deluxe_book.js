@@ -96,10 +96,10 @@ document.getElementById('submitBooking').addEventListener('click', function() {
         bookingData.permintaanKhusus.push($('#othersText').val());
     }
 
-    bookingData.hargaNormal = harga_normal; // harga_normal should be defined in the global scope
-    bookingData.hargaDiskon = harga_diskon; // harga_diskon should be defined in the global scope
+    bookingData.hargaNormal = harga_normal;
+    bookingData.hargaDiskon = harga_diskon;
     bookingData.hargaTotal = harga_diskon * bookingData.lamaInap;
-    bookingData.checkInDate = check_in_date_display; // check_in_date_display should be defined in the global scope
+    bookingData.checkInDate = check_in_date_display;
     bookingData.checkOutDate = $('#checkOutDate').text().split(': ')[1];
     bookingData.createdAt = createdAt;
     bookingData.updatedAt = updatedAt;
@@ -174,7 +174,7 @@ function payNow(bookingCode) {
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            window.location.href = '/user/reservasi';
+                            window.location.href = '/user/book';
                         });
                     } else {
                         Swal.fire({
