@@ -312,8 +312,12 @@ def user_rooms():
     
 @app.route('/user/faq')
 def user_faq():
-    faqs = db.faqs.find()
-    return render_template('user/faq/faq.html', faqs=faqs)
+    user_info = get_user_info()
+    if user_info:
+        faqs = db.faqs.find()
+        return render_template('user/faq/faq.html', faqs=faqs, user_info=user_info)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/user/rooms/deluxe', methods=['GET'])
 def user_deluxe_room():
