@@ -11,7 +11,7 @@
 
 <body>
     {% include 'admin/gallery/sidebar.html' %}
-    <div class="container-xl">
+    <div class="container-xl m-2">
         <div class="table-responsive">
             <div class="table-wrapper">
                 <div class="table-title">
@@ -20,8 +20,8 @@
                             <h2>Kelola <b>Gallery</b></h2>
                         </div>
                         <div class="col-sm-3 text-right">
-                            <a href="{{ url_for('admin_upload_gallery') }}" class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Tambah</span></a>
-                            <a href="javascript:void(0);" id="bulkDeleteBtn" class="btn btn-danger"><i class="material-icons">&#xE15C;</i> <span>Hapus</span></a>
+                            <a href="{{ url_for('admin_upload_gallery') }}" class="btn btn-success"><i class="material-icons">&#xE147;</i> Tambah</a>
+                            <a href="javascript:void(0);" id="bulkDeleteBtn" class="btn btn-danger"><i class="material-icons">&#xE15C;</i> Delete</a>
                         </div>
                     </div>
                 </div>

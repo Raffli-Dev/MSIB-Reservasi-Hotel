@@ -14,16 +14,16 @@
                 <li class="nav-item"><a href="{{ url_for('user_gallery') }}" class="nav-link">Galeri</a></li>
                 <li class="nav-item"><a href="{{ url_for('user_contact') }}" class="nav-link">Kontak</a></li>
                 <li class="nav-item"><a href="{{ url_for('user_faq') }}" class="nav-link">FAQ</a></li>
-                <li class="nav-item"><a href="{{ url_for('user_book') }}" class="nav-link">Pesan Kamar</a></li>
+                <li class="nav-item active"><a href="{{ url_for('user_book') }}" class="nav-link">Pesan Kamar</a></li>
                 {% if user_info %}
-                <li class="nav-item dropdown active">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ user_info . full_name }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userDropdown">
                         <a class="dropdown-item" href="{{ url_for('user_profile') }}">Profil</a>
-                        <a class="dropdown-item active" href="{{ url_for('user_reservasi') }}">Riwayat Reservasi</a>
+                        <a class="dropdown-item" href="{{ url_for('user_reservasi') }}">Riwayat Reservasi</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url_for('logout') }}">Keluar</a>
                     </div>
