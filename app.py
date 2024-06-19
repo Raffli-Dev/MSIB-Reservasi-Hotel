@@ -16,7 +16,6 @@ import pytz
 from bson.errors import InvalidId
 from apscheduler.schedulers.background import BackgroundScheduler
 
-
 locale.setlocale(locale.LC_ALL, '')
 
 
