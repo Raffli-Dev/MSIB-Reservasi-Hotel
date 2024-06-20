@@ -9,53 +9,42 @@
     <meta property="og:description" content="Hotel Telaga Mas " />
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../../static/style/register.css">
+    <link rel="stylesheet" href="../../static/style/login.css">
     <style>
-        .container {
+        .spinner-border {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-        
-        @media (min-width: 768px) {
-            .container {
-                width: 75%;
-                margin: 0 12.5%;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .container {
-                width: 50%;
-                margin: 0 25%;
-            }
-        }
-        
-        .required-field::after {
-            content: " *";
-            color: red;
-        }
-        
-        .help.is-danger {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.7);
+            z-index: 1000;
             display: none;
         }
-        
-        @media (max-width: 768px) {
-            .field label {
-                font-size: 0.9em;
-            }
-        
-            .field input, 
-            .field select, 
-            .field button {
-                font-size: 0.9em;
-            }
-        }        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+        .blur {
+            filter: blur(5px);
+        }
     </style>
 </head>
 
 <body>
+    <div id="spinner-container" class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
     <section class="container">
         <header class="title">Register</header>
 
@@ -86,8 +75,7 @@
                 <div class="control">
                     <input class="input" type="password" name="password" placeholder="Masukkan kata sandi" />
                 </div>
-                <p class="help is-danger">Kata Sandi wajib diisi dan harus minimal 8 karakter, mengandung setidaknya
-                    satu angka dan satu huruf besar</p>
+                <p class="help is-danger">Kata Sandi wajib diisi dan harus minimal 8 karakter, mengandung setidaknya satu angka dan satu huruf besar</p>
             </div>
 
             <div class="field">
@@ -165,13 +153,15 @@
                     <button type="submit" class="button is-primary">Daftar</button>
                 </div>
             </div>
+
             <div class="field">
-              <p>Sudah punya akun? <a href="{{ url_for('login') }}">Login di sini</a></p>
-          </div>
+                <p>Sudah punya akun? <a href="{{ url_for('login') }}">Login di sini</a></p>
+            </div>
         </form>
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             $('#registration-form').on('submit', function(event) {
@@ -213,8 +203,7 @@
 
                 const phoneNumber = $('input[name="phoneNumber"]').val();
                 const phonePattern = /^[0-9]{10,15}$/;
-                const phoneHelpText = $('input[name="phoneNumber"]').closest('.field').find(
-                    '.help.is-danger');
+                const phoneHelpText = $('input[name="phoneNumber"]').closest('.field').find('.help.is-danger');
                 if (!phonePattern.test(phoneNumber)) {
                     phoneHelpText.show();
                     isValid = false;
@@ -223,6 +212,10 @@
                 }
 
                 if (isValid) {
+                    $('#spinner-container').show();
+                    $('.button.is-primary').prop('disabled', true); // Disable the submit button
+                    $('.container').addClass('blur'); // Add blur effect
+                    $('.spinner-border').show();
                     $.ajax({
                         type: 'POST',
                         url: '/register',
@@ -230,25 +223,28 @@
                         success: function(response) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Pendaftaran berhasil!',
-                                showConfirmButton: false,
-                                timer: 1500
+                                title: 'Pendaftaran berhasil',
+                                text: 'Silakan cek email Anda untuk melihat kode OTP yang telah dikirim.',
+                                showConfirmButton: true
                             }).then(() => {
-                                window.location.href = '/login';
+                                window.location.href = response.redirect;
                             });
                         },
                         error: function(xhr, textStatus, errorThrown) {
                             const errorMessage = xhr.responseJSON.error;
                             $('#flash-message-content').text(errorMessage);
                             $('#flash-messages').show();
+                        },
+                        complete: function() {
+                            $('#spinner-container').hide(); // Hide the spinner
+                            $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                            $('.container').removeClass('blur'); // Remove blur effect
                         }
                     });
                 }
             });
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </body>
 
 </html>

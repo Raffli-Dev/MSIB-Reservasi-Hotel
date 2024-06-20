@@ -291,16 +291,15 @@ def register():
                 'region': region,
                 'postal_code': postal_code,
                 'profile_picture_url': profile_picture_url,
-                'is_active': False,
-                'created_at': datetime.now()
+                'is_active': False
             }
 
-            user_id = db.users.insert_one(user_data).inserted_id
+            db.users.insert_one(user_data)
 
             otp = generate_otp()
             save_otp(email, otp)
             if send_otp(email, otp):
-                return jsonify({'success': 'Pendaftaran berhasil! Silakan cek email Anda untuk kode OTP.', 'redirect': f'/otp/{user_id}'}), 200
+                return jsonify({'success': 'Pendaftaran berhasil! Silakan cek email Anda untuk kode OTP.', 'redirect': '/otp'}), 200
             else:
                 return jsonify({'error': 'Gagal mengirim email OTP. Coba lagi nanti.'}), 500
         except Exception as e:
@@ -309,31 +308,9 @@ def register():
 
     return render_template('register/register.html')
 
-def delete_unverified_users():
-    threshold = datetime.now() - timedelta(minutes=1)
-    result = db.users.delete_many({'is_active': False, 'created_at': {'$lt': threshold}})
-    logging.info(f"Deleted {result.deleted_count} unverified users")
-
-# Scheduler untuk menjalankan delete_unverified_users setiap satu menit
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=delete_unverified_users, trigger="cron", hour=0, minute=0)
-scheduler.start()
-
-@app.route('/otp/<user_id>', methods=['GET', 'POST'])
-def otp(user_id):
-    user = db.users.find_one({'_id': ObjectId(user_id)})
-    if not user:
-        return redirect(url_for('register'))
-
-    if request.method == 'POST':
-        otp = request.form.get('otp')
-        if verify_otp(user['email'], otp):
-            db.users.update_one({'_id': ObjectId(user_id)}, {'$set': {'is_active': True}})
-            return jsonify({'success': 'Verifikasi berhasil!'}), 200
-        else:
-            return jsonify({'error': 'Kode OTP salah atau sudah kadaluarsa.'}), 400
-
-    return render_template('register/otp.html', email=user['email'])
+@app.route('/otp')
+def otp():
+    return render_template('register/otp.html')
 
 @app.route('/verify_otp', methods=['POST'])
 def verify_otp_route():
@@ -1110,6 +1087,19 @@ def login_admin():
 def admin_login():
     email = request.form.get('email')
     password = request.form.get('password')
+    recaptcha_response = request.form.get('g-recaptcha-response')
+    # Verify reCAPTCHA
+    secret_key =  os.getenv('SECRET_KEY')
+    payload = {
+        'secret': secret_key,
+        'response': recaptcha_response
+    }
+    recaptcha_verify = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
+    result = recaptcha_verify.json()
+
+    if not result.get('success'):
+        return jsonify({'result': 'fail', 'msg': 'Invalid reCAPTCHA. Please try again.'})
+
     admin = db.admin.find_one({'email': email})
 
     if admin:
