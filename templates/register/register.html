@@ -10,6 +10,8 @@
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
     <style>
         .container {
             width: 100%;
@@ -56,120 +58,122 @@
 </head>
 
 <body>
-    <section class="container">
-        <header class="title">Register</header>
-
-        <!-- Flash Messages -->
-        <div id="flash-messages" class="notification is-danger" style="display: none;">
-            <p id="flash-message-content"></p>
-        </div>
-
-        <form id="registration-form" class="form">
-            <div class="field">
-                <label class="label required-field">Nama Lengkap</label>
-                <div class="control">
-                    <input class="input" type="text" name="fullName" placeholder="Masukkan nama lengkap" />
-                </div>
-                <p class="help is-danger">Nama Lengkap wajib diisi</p>
+    <div class="container" data-aos="zoom-in">
+        <section>
+            <header class="title">Register</header>
+    
+            <!-- Flash Messages -->
+            <div id="flash-messages" class="notification is-danger" style="display: none;">
+                <p id="flash-message-content"></p>
             </div>
-
-            <div class="field">
-                <label class="label required-field">Alamat Email</label>
-                <div class="control">
-                    <input class="input" type="email" name="email" placeholder="Masukkan alamat email" />
+    
+            <form id="registration-form" class="form">
+                <div class="field">
+                    <label class="label required-field">Nama Lengkap</label>
+                    <div class="control">
+                        <input class="input" type="text" name="fullName" placeholder="Masukkan nama lengkap" />
+                    </div>
+                    <p class="help is-danger">Nama Lengkap wajib diisi</p>
                 </div>
-                <p class="help is-danger">Alamat Email yang valid wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Kata Sandi</label>
-                <div class="control">
-                    <input class="input" type="password" name="password" placeholder="Masukkan kata sandi" />
+    
+                <div class="field">
+                    <label class="label required-field">Alamat Email</label>
+                    <div class="control">
+                        <input class="input" type="email" name="email" placeholder="Masukkan alamat email" />
+                    </div>
+                    <p class="help is-danger">Alamat Email yang valid wajib diisi</p>
                 </div>
-                <p class="help is-danger">Kata Sandi wajib diisi dan harus minimal 8 karakter, mengandung setidaknya
-                    satu angka dan satu huruf besar</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Konfirmasi Kata Sandi</label>
-                <div class="control">
-                    <input class="input" type="password" name="confirmPassword" placeholder="Konfirmasi kata sandi" />
+    
+                <div class="field">
+                    <label class="label required-field">Kata Sandi</label>
+                    <div class="control">
+                        <input class="input" type="password" name="password" placeholder="Masukkan kata sandi" />
+                    </div>
+                    <p class="help is-danger">Kata Sandi wajib diisi dan harus minimal 8 karakter, mengandung setidaknya
+                        satu angka dan satu huruf besar</p>
                 </div>
-                <p class="help is-danger">Kata Sandi harus sama</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Nomor Telepon</label>
-                <div class="control">
-                    <input class="input" type="text" name="phoneNumber" placeholder="Masukkan nomor telepon" />
+    
+                <div class="field">
+                    <label class="label required-field">Konfirmasi Kata Sandi</label>
+                    <div class="control">
+                        <input class="input" type="password" name="confirmPassword" placeholder="Konfirmasi kata sandi" />
+                    </div>
+                    <p class="help is-danger">Kata Sandi harus sama</p>
                 </div>
-                <p class="help is-danger">Nomor Telepon wajib diisi dan harus berupa nomor yang valid</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Tanggal Lahir</label>
-                <div class="control">
-                    <input class="input" type="date" name="birthDate" placeholder="Masukkan tanggal lahir" />
+    
+                <div class="field">
+                    <label class="label required-field">Nomor Telepon</label>
+                    <div class="control">
+                        <input class="input" type="text" name="phoneNumber" placeholder="Masukkan nomor telepon" />
+                    </div>
+                    <p class="help is-danger">Nomor Telepon wajib diisi dan harus berupa nomor yang valid</p>
                 </div>
-                <p class="help is-danger">Tanggal Lahir wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Jenis Kelamin</label>
-                <div class="control">
-                    <div class="select">
-                        <select name="gender">
-                            <option value="" hidden>Pilih jenis kelamin</option>
-                            <option value="Laki-Laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
-                        </select>
+    
+                <div class="field">
+                    <label class="label required-field">Tanggal Lahir</label>
+                    <div class="control">
+                        <input class="input" type="date" name="birthDate" placeholder="Masukkan tanggal lahir" />
+                    </div>
+                    <p class="help is-danger">Tanggal Lahir wajib diisi</p>
+                </div>
+    
+                <div class="field">
+                    <label class="label required-field">Jenis Kelamin</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="gender">
+                                <option value="" hidden>Pilih jenis kelamin</option>
+                                <option value="Laki-Laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="help is-danger">Jenis Kelamin wajib dipilih</p>
+                </div>
+    
+                <div class="field">
+                    <label class="label required-field">Alamat</label>
+                    <div class="control">
+                        <input class="input" type="text" name="address" placeholder="Masukkan alamat jalan" />
+                    </div>
+                    <p class="help is-danger">Alamat wajib diisi</p>
+                </div>
+    
+                <div class="field">
+                    <label class="label required-field">Kota</label>
+                    <div class="control">
+                        <input class="input" type="text" name="city" placeholder="Masukkan kota" />
+                    </div>
+                    <p class="help is-danger">Kota wajib diisi</p>
+                </div>
+    
+                <div class="field">
+                    <label class="label required-field">Provinsi</label>
+                    <div class="control">
+                        <input class="input" type="text" name="region" placeholder="Masukkan provinsi" />
+                    </div>
+                    <p class="help is-danger">Provinsi wajib diisi</p>
+                </div>
+    
+                <div class="field">
+                    <label class="label required-field">Kode Pos</label>
+                    <div class="control">
+                        <input class="input" type="number" name="postalCode" placeholder="Masukkan kode pos" />
+                    </div>
+                    <p class="help is-danger">Kode Pos wajib diisi</p>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button" style="background-color: #008CFF;">Daftar</button>
                     </div>
                 </div>
-                <p class="help is-danger">Jenis Kelamin wajib dipilih</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Alamat</label>
-                <div class="control">
-                    <input class="input" type="text" name="address" placeholder="Masukkan alamat jalan" />
-                </div>
-                <p class="help is-danger">Alamat wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Kota</label>
-                <div class="control">
-                    <input class="input" type="text" name="city" placeholder="Masukkan kota" />
-                </div>
-                <p class="help is-danger">Kota wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Provinsi</label>
-                <div class="control">
-                    <input class="input" type="text" name="region" placeholder="Masukkan provinsi" />
-                </div>
-                <p class="help is-danger">Provinsi wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Kode Pos</label>
-                <div class="control">
-                    <input class="input" type="number" name="postalCode" placeholder="Masukkan kode pos" />
-                </div>
-                <p class="help is-danger">Kode Pos wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    <button type="submit" class="button is-primary">Daftar</button>
-                </div>
-            </div>
-            <div class="field">
-              <p>Sudah punya akun? <a href="{{ url_for('login') }}">Login di sini</a></p>
-          </div>
-        </form>
-    </section>
+                <div class="field">
+                  <p>Sudah punya akun? <a href="{{ url_for('login') }}">Login di sini</a></p>
+              </div>
+            </form>
+        </section>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -248,6 +252,10 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
 
 </body>
 

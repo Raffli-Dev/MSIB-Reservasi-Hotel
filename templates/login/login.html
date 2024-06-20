@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
         .container {
             width: 100%;
@@ -150,56 +151,58 @@
 </head>
 
 <body>
-    <section class="container">
-        <header class="title">Formulir Login</header>
-        <form id="login-form" class="form" action="/sign_in" method="POST">
-            <div class="field">
-                <label class="label required-field">Alamat Email</label>
-                <div class="control">
-                    <div class="wrap-input-9">
-                        <input class="input" type="email" name="email" placeholder="Masukan Email">
-                        <span class="focus-border">
-                            <i></i>
-                        </span>
+    <div data-aos="zoom-in" class="container">
+        <section>
+            <header class="title">Login</header>
+            <form id="login-form" class="form" action="/sign_in" method="POST">
+                <div class="field">
+                    <label class="label required-field">Alamat Email</label>
+                    <div class="control">
+                        <div class="wrap-input-9">
+                            <input class="input" type="email" name="email" placeholder="Masukan Email">
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                    <p class="help is-danger">Alamat Email yang valid wajib diisi</p>
+                </div>
+    
+                <div class="field">
+                    <label class="label required-field">Kata Sandi</label>
+                    <div class="control">
+                        <div class="wrap-input-9">
+                            <input class="input" type="password" name="password" id="password" placeholder="Masukan Kata Sandi">
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                    <p class="help is-danger">Kata Sandi wajib diisi</p>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" id="togglePassword"> Tampilkan Kata Sandi
+                        </label>
                     </div>
                 </div>
-                <p class="help is-danger">Alamat Email yang valid wajib diisi</p>
-            </div>
-
-            <div class="field">
-                <label class="label required-field">Kata Sandi</label>
-                <div class="control">
-                    <div class="wrap-input-9">
-                        <input class="input" type="password" name="password" id="password" placeholder="Masukan Kata Sandi">
-                        <span class="focus-border">
-                            <i></i>
-                        </span>
+                <div class="field">
+                    <div class="control">
+                        <!-- Pembanagan Animasi Button -->
+                        <button type="submit" onclick="sign_in()" class="button" style="background-color: #008CFF;">Login</button>
                     </div>
                 </div>
-                <p class="help is-danger">Kata Sandi wajib diisi</p>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox">
-                        <input type="checkbox" id="togglePassword"> Tampilkan Kata Sandi
-                    </label>
+                <div class="field">
+                    <p class="compact">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
+                    <p class="compact">Back to <a href="{{ url_for('home') }}">Home</a></p>
                 </div>
+            </form>
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
-            <div class="field">
-                <div class="control">
-                    <!-- Pembanagan Animasi Button -->
-                    <button type="submit" onclick="sign_in()" class="button is-primary">Login</button>
-                </div>
-            </div>
-            <div class="field">
-                <p class="compact">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
-                <p class="compact">Back to <a href="{{ url_for('home') }}">Home</a></p>
-            </div>
-        </form>
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -263,6 +266,10 @@
                 }
             });
         });
+    </script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
     </script>
 </body>
 
