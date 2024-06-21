@@ -28,6 +28,11 @@
                         <a class="dropdown-item" href="{{ url_for('logout') }}">Keluar</a>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ user_info.profile_picture_url }}">
+                        <img src="{{ user_info.profile_picture_url }}" alt="User Icon" class="user-icon" style="width: 25px; height: 25px; border-radius: 50%;">
+                    </a>
+                </li>
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('login') }}">Masuk</a>
