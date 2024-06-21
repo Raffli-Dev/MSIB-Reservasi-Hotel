@@ -305,6 +305,7 @@ height: 100%;
 }
 
 .navbar-nav .nav-link {
+  font-size: medium;
   position: relative;
   display: block;
   padding: 10px 16px;
