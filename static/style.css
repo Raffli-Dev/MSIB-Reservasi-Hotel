@@ -79,6 +79,7 @@ body {
 .gender input {
   accent-color: rgb(130, 106, 251);
 }
+
 .form :where(.gender input, .gender label) {
   cursor: pointer;
 }

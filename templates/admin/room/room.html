@@ -7,10 +7,12 @@
     <title>Kamar - Hotel Telaga Mas</title>
     {% include 'admin/import/head_import.html' %}
 
+
 </head>
 
 <body>
     {% include 'admin/room/sidebar.html' %}
+    
     <div class="container-xl">
         <div class="table-responsive">
             <div class="table-wrapper">
@@ -30,8 +32,8 @@
                             <input type="date" class="form-control" id="dateFilter" placeholder="dd/mm/yyyy">
                         </div>
                         <div class="col-sm-3 text-right">
-                            <a href="{{ url_for('admin_add_room') }}" class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Tambah</span></a>
-                            <a href="javascript:void(0);" id="bulkDeleteBtn" class="btn btn-danger"><i class="material-icons">&#xE15C;</i> <span>Hapus</span></a>
+                            <a href="{{ url_for('admin_add_room') }}" class="btn btn-success"><i class="material-icons">&#xE147;</i>Add</a>
+                            <a href="javascript:void(0);" id="bulkDeleteBtn" class="btn btn-danger"><i class="material-icons">&#xE15C;</i>Del</a>
                         </div>
                     </div>
                 </div>
