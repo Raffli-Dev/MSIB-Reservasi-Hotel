@@ -15,15 +15,18 @@ import json
 import pytz
 from bson.errors import InvalidId
 from apscheduler.schedulers.background import BackgroundScheduler
+import random
+from flask_mail import Mail, Message
+import jwt
 
 locale.setlocale(locale.LC_ALL, '')
-
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = 'static/img/uploads/profile'
 app.config['UPLOAD_Gallery'] = 'static/img/uploads/gallery'
-app.config['MAX_CONTENT_PATH'] = 1 * 1024 * 1024  # Max Upload 16mb
+app.config['UPLOAD_teamMember'] = 'static/img/uploads/teamMembers'
+app.config['MAX_CONTENT_PATH'] = 1 * 1024 * 1024
 app.secret_key = 'supersecretkey'
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -37,6 +40,18 @@ MIDTRANS_SERVER_KEY = os.environ.get("MIDTRANS_SERVER_KEY")
 
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
+
+# Konfigurasi Flask-Mail
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+
+mail = Mail(app)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,7 +69,7 @@ def get_admin_info():
         admin_info = db.admin.find_one({'email': email})
         return admin_info
     return None
-
+#error handling
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error_page/404.html'), 404
@@ -125,6 +140,21 @@ def rooms():
 def deluxe_room():
     return render_template('room/duluxe.html')
 
+@app.route('/team/member', methods=['GET'])
+def team_member():
+    # Cek pengaturan
+    setting = db.settings.find_one({'setting': 'team_member_enabled'})
+    team_member_enabled = setting['value'] if setting else False
+    
+    if not team_member_enabled:
+        return render_template('error_page/error_setting.html', message="Halaman Team Member dinonaktifkan."), 403
+    
+    # Periksa apakah pengguna login
+    user_logged_in = 'user_id' in session
+    
+    team_members = db.teamMember.find()
+    return render_template('teamMemberPage/teamMember.html', team_members=team_members, user_logged_in=user_logged_in)
+
 @app.route('/faq')
 def faq():
     faqs = db.faqs.find()
@@ -178,10 +208,26 @@ def book():
 def sign_in():
     email = request.form.get('email')
     password = request.form.get('password')
+    recaptcha_response = request.form.get('g-recaptcha-response')
+
+    # Verify reCAPTCHA
+    secret_key =  os.getenv('SECRET_KEY')
+    payload = {
+        'secret': secret_key,
+        'response': recaptcha_response
+    }
+    recaptcha_verify = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
+    result = recaptcha_verify.json()
+
+    if not result.get('success'):
+        return jsonify({'result': 'fail', 'msg': 'Invalid reCAPTCHA. Please try again.'})
 
     user = db.users.find_one({'email': email})
 
     if user:
+        if not user['is_active']:
+            return jsonify({'result': 'unverified', 'msg': 'Akun belum diaktifkan. Silakan verifikasi email Anda.'})
+
         hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
         if user['password'] == hashed_password:
             session['logged_in'] = True
@@ -189,54 +235,195 @@ def sign_in():
             session['full_name'] = user['full_name']
             session['user_id'] = str(user['_id'])
             return jsonify({'result': 'success', 'msg': 'Login berhasil'})
-    return jsonify({'result': 'fail', 'msg': 'Password Salah!!!'})
+        else:
+            return jsonify({'result': 'fail', 'msg': 'Password Salah!!!'})
+    else:
+        return jsonify({'result': 'fail', 'msg': 'Pengguna tidak ditemukan!'})
+
+def send_otp(email, otp):
+    try:
+        msg = Message("Kode OTP Anda", recipients=[email])
+        msg.body = (
+            f"Kode OTP Anda adalah {otp}. Kode ini berlaku selama satu jam.\n"
+            "Mohon jangan bagikan kode ini kepada siapa pun."
+        )
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+def generate_otp():
+    return random.randint(100000, 999999)
+
+def save_otp(email, otp):
+    expiration_time = datetime.now() + timedelta(hours=1)
+    db.otps.insert_one({'email': email, 'otp': otp, 'expires_at': expiration_time})
+
+def verify_otp(email, otp):
+    record = db.otps.find_one({'email': email, 'otp': otp})
+    if record and record['expires_at'] > datetime.now():
+        db.otps.delete_one({'_id': record['_id']})
+        return True
+    return False
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        full_name = request.form.get('fullName')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirmPassword')
-        phone_number = request.form.get('phoneNumber')
-        birth_date = request.form.get('birthDate')
-        gender = request.form.get('gender')
-        address = request.form.get('address')
-        city = request.form.get('city')
-        region = request.form.get('region')
-        postal_code = request.form.get('postalCode')
+        try:
+            full_name = request.form.get('fullName')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            confirm_password = request.form.get('confirmPassword')
+            phone_number = request.form.get('phoneNumber')
+            birth_date = request.form.get('birthDate')
+            gender = request.form.get('gender')
+            address = request.form.get('address')
+            city = request.form.get('city')
+            region = request.form.get('region')
+            postal_code = request.form.get('postalCode')
 
-        if not full_name or not email or not password or not confirm_password or not phone_number or not birth_date or not gender or not address or not city or not region or not postal_code:
-            return jsonify({'error': 'Semua field yang diberi tanda * harus diisi.'}), 400
+            if not all([full_name, email, password, confirm_password, phone_number, birth_date, gender, address, city, region, postal_code]):
+                return jsonify({'error': 'Semua field yang diberi tanda * harus diisi.'}), 400
 
-        if password != confirm_password:
-            return jsonify({'error': 'Kata sandi dan konfirmasi kata sandi tidak cocok.'}), 400
+            if password != confirm_password:
+                return jsonify({'error': 'Kata sandi dan konfirmasi kata sandi tidak cocok.'}), 400
 
-        if db.users.find_one({'email': email}):
-            return jsonify({'error': 'Email sudah digunakan.'}), 400
+            if db.users.find_one({'email': email}):
+                return jsonify({'error': 'Email sudah digunakan.'}), 400
 
-        hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
-        profile_picture_url = url_for('static', filename='img/uploads/profile/profile_placeholder.png')
+            hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            profile_picture_url = url_for('static', filename='img/uploads/profile/profile_placeholder.png')
 
-        user_data = {
-            'full_name': full_name,
-            'email': email,
-            'password': hashed_password,
-            'phone_number': phone_number,
-            'birth_date': birth_date,
-            'gender': gender,
-            'address': address,
-            'city': city,
-            'region': region,
-            'postal_code': postal_code,
-            'profile_picture_url': profile_picture_url
-            
-        }
+            user_data = {
+                'full_name': full_name,
+                'email': email,
+                'password': hashed_password,
+                'phone_number': phone_number,
+                'birth_date': birth_date,
+                'gender': gender,
+                'address': address,
+                'city': city,
+                'region': region,
+                'postal_code': postal_code,
+                'profile_picture_url': profile_picture_url,
+                'is_active': False,
+                'created_at': datetime.now()
+            }
 
-        db.users.insert_one(user_data)
-        return jsonify({'success': 'Pendaftaran berhasil!'}), 200
+            user_id = db.users.insert_one(user_data).inserted_id
+
+            otp = generate_otp()
+            save_otp(email, otp)
+            if send_otp(email, otp):
+                return jsonify({'success': 'Pendaftaran berhasil! Silakan cek email Anda untuk kode OTP.', 'redirect': f'/otp/{user_id}'}), 200
+            else:
+                return jsonify({'error': 'Gagal mengirim email OTP. Coba lagi nanti.'}), 500
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({'error': str(e)}), 500
 
     return render_template('register/register.html')
+
+def delete_unverified_users():
+    threshold = datetime.now() - timedelta(minutes=1)
+    result = db.users.delete_many({'is_active': False, 'created_at': {'$lt': threshold}})
+    logging.info(f"Deleted {result.deleted_count} unverified users")
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=delete_unverified_users, trigger="interval", hours=5)
+scheduler.start()
+
+@app.route('/otp/<user_id>', methods=['GET', 'POST'])
+def otp(user_id):
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+    if not user:
+        return redirect(url_for('register'))
+
+    if request.method == 'POST':
+        otp = request.form.get('otp')
+        if verify_otp(user['email'], otp):
+            db.users.update_one({'_id': ObjectId(user_id)}, {'$set': {'is_active': True}})
+            return jsonify({'success': 'Verifikasi berhasil!'}), 200
+        else:
+            return jsonify({'error': 'Kode OTP salah atau sudah kadaluarsa.'}), 400
+
+    return render_template('register/otp.html', email=user['email'])
+
+@app.route('/verify_otp', methods=['POST'])
+def verify_otp_route():
+    email = request.form.get('email')
+    otp = request.form.get('otp')
+
+    if verify_otp(email, int(otp)):
+        db.users.update_one({'email': email}, {'$set': {'is_active': True}})
+        return jsonify({'success': 'Akun Anda telah diaktifkan!'}), 200
+    else:
+        return jsonify({'error': 'OTP tidak valid atau telah kadaluwarsa.'}), 400
+
+
+# Fungsi untuk menghasilkan token JWT
+def generate_token(email):
+    token = jwt.encode({'email': email, 'exp': datetime.utcnow() + timedelta(minutes=15)}, SECRET_KEY, algorithm='HS256')
+    return token
+
+# Fungsi untuk memverifikasi token JWT
+def verify_token(token):
+    try:
+        data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        return data['email']
+    except jwt.ExpiredSignatureError:
+        logging.error("Token has expired")
+        return None
+    except jwt.InvalidTokenError as e:
+        logging.error(f"Invalid token: {e}")
+        return None
+
+# Route untuk permintaan lupa password
+@app.route('/forget/password', methods=['GET', 'POST'])
+def forget_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        logging.info(f"Received password reset request for email: {email}")
+        
+        try:
+            user = db.users.find_one({'email': email})
+            logging.debug(f"Database response for email {email}: {user}")
+            if user:
+                token = generate_token(email)
+                reset_link = url_for('reset_password', token=token, _external=True)
+                msg = Message('Reset Password', recipients=[email])
+                msg.body = f'Klik link berikut untuk mereset password Anda: {reset_link}\n\nKode ini berlaku selama 15 menit.'
+                try:
+                    mail.send(msg)
+                    logging.info(f"Password reset email sent to: {email}")
+                    return jsonify({'success': True})
+                except Exception as e:
+                    logging.error(f"Failed to send email: {e}")
+                    return jsonify({'success': False, 'error': str(e)}), 500
+            else:
+                logging.warning(f"Email not found: {email}")
+                return jsonify({'success': False, 'error': 'Email not found'}), 404
+        except Exception as e:
+            logging.error(f"Error processing password reset request: {e}")
+            return jsonify({'success': False, 'error': str(e)}), 500
+    return render_template('login/forget_password.html')
+
+# Route untuk mereset password
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if request.method == 'POST':
+        password = request.form['password']
+        email = verify_token(token)
+        if email:
+            hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            db.users.update_one({'email': email}, {'$set': {'password': hashed_password}})
+            logging.info(f"Password reset successful for email: {email}")
+            return jsonify({'success': True})
+        else:
+            logging.warning("Invalid or expired token used for password reset.")
+            return jsonify({'success': False, 'error': 'Token tidak valid atau kadaluarsa.'}), 400
+    return render_template('login/reset_password.html', token=token)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -249,7 +436,6 @@ def login():
 
     msg = request.args.get("msg")
     return render_template("login/login.html", msg=msg)
-
 
 @app.route("/user/index")
 def user_index():
@@ -448,13 +634,27 @@ def user_reservasi():
     if 'logged_in' in session:
         email = session['email']
         user_info = db.users.find_one({'email': email})
-        
+
+        # Get filters from request args
+        booking_code = request.args.get('booking_code', '')
+        tipe_kamar = request.args.get('tipe_kamar', '')
+        page = int(request.args.get('page', 1))
+        limit = 5
+        skip = (page - 1) * limit
+
         # Fetch bookings from both collections
-        deluxe_bookings = list(db.deluxe_booking.find({'email': email}).sort('created_at', -1))
-        family_deluxe_bookings = list(db.family_deluxe_booking.find({'email': email}).sort('created_at', -1))
+        query = {'email': email}
+        if booking_code:
+            query['booking_code'] = booking_code
+        if tipe_kamar:
+            query['tipe_kamar'] = tipe_kamar
+
+        deluxe_bookings = list(db.deluxe_booking.find(query).sort('created_at', -1).skip(skip).limit(limit))
+        family_deluxe_bookings = list(db.family_deluxe_booking.find(query).sort('created_at', -1).skip(skip).limit(limit))
         
         # Combine bookings
         all_bookings = deluxe_bookings + family_deluxe_bookings
+        all_bookings = sorted(all_bookings, key=lambda k: k['created_at'], reverse=True)
 
         now = datetime.now()
 
@@ -481,10 +681,10 @@ def user_reservasi():
             review_exists = db.reviews.find_one({'booking_id': str(booking['_id']), 'email': email}) is not None
             booking['review_exists'] = review_exists
 
-            # Debugging output
-            print(f"Booking ID: {booking['_id']}, Can Review: {booking['can_review']}, Review Exists: {booking['review_exists']}, Status: {booking['status']}, Check-out Date: {booking['check_out_date']}, Now: {now}")
-
-        return render_template('user/reservasi/reservasi.html', user_info=user_info, user_bookings=all_bookings, format_currency=format_currency)
+        if request.args.get('page'):
+            return render_template('user/reservasi/booking_list.html', user_bookings=all_bookings)
+        else:
+            return render_template('user/reservasi/reservasi.html', user_info=user_info, user_bookings=all_bookings, format_currency=format_currency)
     else:
         return redirect(url_for('login'))
         
@@ -731,7 +931,7 @@ def payment_token(booking_code):
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
-        response = requests.post('https://app.sandbox.midtrans.com/snap/v1/transactions', headers=headers, json=payload)
+        response = requests.post('https://app.midtrans.com/snap/v1/transactions', headers=headers, json=payload)
         response_data = response.json()
         logger.info(f'Response from Midtrans: {response_data}')
         if 'token' in response_data:
@@ -1007,9 +1207,18 @@ def login_admin():
 def admin_login():
     email = request.form.get('email')
     password = request.form.get('password')
-
     admin = db.admin.find_one({'email': email})
-
+    recaptcha_response = request.form.get('g-recaptcha-response')
+    # Verify reCAPTCHA
+    secret_key =  os.getenv('SECRET_KEY')
+    payload = {
+        'secret': secret_key,
+        'response': recaptcha_response
+    }
+    recaptcha_verify = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
+    result = recaptcha_verify.json()
+    if not result.get('success'):
+        return jsonify({'result': 'fail', 'msg': 'Invalid reCAPTCHA. Please try again.'})
     if admin:
         hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
         if admin['password'] == hashed_password:
@@ -1660,7 +1869,7 @@ def delete_all_guests():
 
 # Scheduler untuk menjalankan delete_all_guests setiap satu menit
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=delete_all_guests, trigger="cron", hour=0, minute=0)
+scheduler.add_job(func=delete_all_guests, trigger="interval", hours=5)
 scheduler.start()
 
 @app.route('/admin/guest/delete_all', methods=['POST'])
@@ -1671,7 +1880,7 @@ def delete_all_guests_route():
     except Exception as e:
         logging.error(f"Error: {e}")
         return jsonify({'result': 'error', 'message': 'An error occurred'}), 500
-        
+
 @app.route('/admin/guest/bulk_delete', methods=['POST'])
 def admin_bulk_delete_guests():
     if 'logged_in' in session:
@@ -1882,6 +2091,131 @@ def admin_bulk_delete_faq():
     else:
         return redirect(url_for('login_admin'))
 
+#route team member
+@app.route('/admin/teamMember', methods=['GET'])
+def admin_teamMember():
+    admin_info = get_admin_info()
+    if admin_info:
+        search_query = request.args.get('search')
+        per_page = 5
+        page = int(request.args.get('page', 1))
+
+        if search_query:
+            team_members = list(db.teamMember.find({'name': {'$regex': search_query, '$options': 'i'}}).skip((page - 1) * per_page).limit(per_page))
+            total_team_members = db.teamMember.count_documents({'name': {'$regex': search_query, '$options': 'i'}})
+        else:
+            team_members = list(db.teamMember.find().skip((page - 1) * per_page).limit(per_page))
+            total_team_members = db.teamMember.count_documents({})
+
+        total_pages = (total_team_members + per_page - 1) // per_page
+        return render_template('admin/teamMember/teamMember.html', team_members=team_members, admin_info=admin_info, page=page, total_pages=total_pages, total_team_members=total_team_members)
+    else:
+        return redirect(url_for('login_admin'))
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
+@app.route('/admin/add_teamMember', methods=['GET', 'POST'])
+def admin_add_team_member():
+    admin_info = get_admin_info()
+    if admin_info:
+        if request.method == 'POST':
+            name = request.form['name']
+            role = request.form['role']
+            institution = request.form['institution']
+            instagram = request.form['instagram']
+            linkedin = request.form['linkedin']
+
+            if 'image' not in request.files:
+                flash('Tidak ada file gambar yang diunggah', 'danger')
+                return redirect(request.url)
+            file = request.files['image']
+            if file.filename == '':
+                flash('Tidak ada file gambar yang dipilih', 'danger')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config['UPLOAD_teamMember'], filename)
+                file.save(file_path)
+                file_url = url_for('static', filename='img/uploads/teamMembers/' + filename)
+
+                db.teamMember.insert_one({
+                    'nama': name,
+                    'role': role,
+                    'universitas': institution,
+                    'profile': file_url,
+                    'link_instagram': instagram,
+                    'link_linkedin': linkedin,
+                    'created_at': datetime.utcnow()
+                })
+                flash('Team member berhasil ditambahkan!', 'success')
+                return redirect(url_for('admin_teamMember'))
+            else:
+                flash('File tidak diperbolehkan', 'danger')
+        return render_template('admin/teamMember/add_teamMember.html', admin_info=admin_info)
+    else:
+        return redirect(url_for('login_admin'))
+
+
+@app.route('/admin/edit_teamMember/<team_member_id>', methods=['GET', 'POST'])
+def admin_edit_team_member(team_member_id):
+    admin_info = get_admin_info()
+    if admin_info:
+        team_member = db.teamMember.find_one({'_id': ObjectId(team_member_id)})
+        if request.method == 'POST':
+            name = request.form['name']
+            role = request.form['role']
+            institution = request.form['institution']
+            instagram = request.form['instagram']
+            linkedin = request.form['linkedin']
+            current_image = request.form['current_image']
+
+            # Handle file upload
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(app.config['UPLOAD_teamMember'], filename)
+                    file.save(file_path)
+                    image_url = url_for('static', filename='img/uploads/teamMembers/' + filename)
+                else:
+                    image_url = current_image
+            else:
+                image_url = current_image
+
+            db.teamMember.update_one(
+                {'_id': ObjectId(team_member_id)},
+                {'$set': {
+                    'nama': name,
+                    'role': role,
+                    'universitas': institution,
+                    'profile': image_url,
+                    'link_instagram': instagram,
+                    'link_linkedin': linkedin
+                }}
+            )
+            flash('Team member berhasil diperbarui!', 'success')
+            return redirect(url_for('admin_teamMember'))
+
+        return render_template('admin/teamMember/edit_teamMember.html', team_member=team_member, admin_info=admin_info)
+    else:
+        return redirect(url_for('login_admin'))
+
+@app.route('/admin/delete_teamMember', methods=['POST'])
+def admin_delete_team_member():
+    team_member_id = request.form['team_member_id']
+    db.teamMember.delete_one({'_id': ObjectId(team_member_id)})
+    return jsonify({'result': 'success'})
+
+@app.route('/admin/bulk_delete_teamMember', methods=['POST'])
+def admin_bulk_delete_team_member():
+    team_member_ids = request.form.getlist('team_member_ids[]')
+    for team_member_id in team_member_ids:
+        db.teamMember.delete_one({'_id': ObjectId(team_member_id)})
+    return jsonify({'result': 'success'})
+
+
 #ini route untuk setting
 @app.route('/admin/settings', methods=['GET', 'POST'])
 def admin_settings():
@@ -1890,28 +2224,37 @@ def admin_settings():
         if request.method == 'POST':
             register_enabled = request.form.get('registerEnabled') == 'active'
             login_enabled = request.form.get('loginEnabled') == 'active'
+            team_member_enabled = request.form.get('teamMemberEnabled') == 'active'
             
             # Save settings to database
             db.settings.update_one({'setting': 'register_enabled'}, {'$set': {'value': register_enabled}}, upsert=True)
             db.settings.update_one({'setting': 'login_enabled'}, {'$set': {'value': login_enabled}}, upsert=True)
+            db.settings.update_one({'setting': 'team_member_enabled'}, {'$set': {'value': team_member_enabled}}, upsert=True)
             
             return redirect(url_for('admin_settings'))
 
         # Fetch settings from database
         register_setting = db.settings.find_one({'setting': 'register_enabled'})
         login_setting = db.settings.find_one({'setting': 'login_enabled'})
+        team_member_setting = db.settings.find_one({'setting': 'team_member_enabled'})
         
         register_enabled = register_setting['value'] if register_setting else None
         login_enabled = login_setting['value'] if login_setting else None
+        team_member_enabled = team_member_setting['value'] if team_member_setting else None
         
-        return render_template('admin/settings/settings.html', register_enabled=register_enabled, login_enabled=login_enabled, admin_info=admin_info)
+        return render_template('admin/settings/settings.html', register_enabled=register_enabled, login_enabled=login_enabled, team_member_enabled=team_member_enabled, admin_info=admin_info)
     else:
         return redirect(url_for('login_admin'))
+
+@app.context_processor
+def inject_team_member_setting():
+    setting = db.settings.find_one({'setting': 'team_member_enabled'})
+    team_member_enabled = setting['value'] if setting else False
+    return dict(team_member_enabled=team_member_enabled)
 
 @app.route('/error/admin')
 def error_admin():
     return render_template('error_page/error_setting.html', message="Registrasi admin dinonaktifkan")
-
 
 if __name__ == '__main__':
     app.run("0.0.0.0", port=5000, debug=True)

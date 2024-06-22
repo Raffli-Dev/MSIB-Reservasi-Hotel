@@ -28,6 +28,14 @@
                     <option value="inactive" {% if login_enabled is not none and not login_enabled %}selected{% endif %}>Nonaktif</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="teamMemberEnabled">Status Team Member</label>
+                <select id="teamMemberEnabled" name="teamMemberEnabled" class="form-control">
+                    <option value="" disabled {% if team_member_enabled is none %}selected{% endif %}>Silahkan pilih</option>
+                    <option value="active" {% if team_member_enabled %}selected{% endif %}>Aktif</option>
+                    <option value="inactive" {% if team_member_enabled is not none and not team_member_enabled %}selected{% endif %}>Nonaktif</option>
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
         </form>
     </div>

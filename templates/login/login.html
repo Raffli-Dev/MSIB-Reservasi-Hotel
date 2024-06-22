@@ -12,200 +12,74 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <style>
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-        
-        @media (min-width: 768px) {
-            .container {
-                width: 75%;
-                margin: 0 12.5%;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .container {
-                width: 50%;
-                margin: 0 25%;
-            }
-        }
-        
-        .required-field::after {
-            content: " *";
-            color: red;
-        }
-        
-        .help.is-danger {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .field label {
-                font-size: 0.9em;
-            }
-        
-            .field input, 
-            .field select, 
-            .field button {
-                font-size: 0.9em;
-            }
-        }
-        .spinner-border {
-            display: none;
-            width: 3rem;
-            height: 3rem;
-            margin: auto;
-        }
+    <link rel="stylesheet" href="../../static/style/login.css">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
 
-        .compact {
-            margin: 0px;
-            padding: 0px;
-            font-size: 12px;
-        }
-
-        .wrap-input-9 .input {
-            width: 100%;
-            box-sizing: border-box;
-            background-color: #f5f6fd;
-            border: 1px solid #ccc;
-            padding: 7px 14px 9px;
-            transition: 0.4s;
-        }
-
-        .wrap-input-9 .input:focus {
-            outline: none;
-        }
-
-        .wrap-input-9 {
-            width: 100%;
-            position: relative;
-        }
-
-        .wrap-input-9 .input ~ .focus-border:before,
-        .wrap-input-9 .input ~ .focus-border:after {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 0;
-            height: 2px;
-            background-color: #6c5dd3;
-            transition: 0.2s;
-            transition-delay: 0.2s;
-        }
-
-        .wrap-input-9 .input ~ .focus-border:after {
-            top: auto;
-            bottom: 0;
-            right: auto;
-            left: 0;
-            transition-delay: 0.6s;
-        }
-
-        .wrap-input-9 .input ~ .focus-border i:before,
-        .wrap-input-9 .input ~ .focus-border i:after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 2px;
-            height: 0;
-            background-color: #6c5dd3;
-            transition: 0.2s;
-        }
-
-        .wrap-input-9 .input ~ .focus-border i:after {
-            left: auto;
-            right: 0;
-            top: auto;
-            bottom: 0;
-            transition-delay: 0.4s;
-        }
-
-        .wrap-input-9 .input:focus ~ .focus-border:before,
-        .wrap-input-9 .input:focus ~ .focus-border:after {
-            width: 100%;
-            transition: 0.2s;
-            transition-delay: 0.6s;
-        }
-
-        .wrap-input-9 .input:focus ~ .focus-border:after {
-            transition-delay: 0.2s;
-        }
-
-        .wrap-input-9 .input:focus ~ .focus-border i:before,
-        .wrap-input-9 .input:focus ~ .focus-border i:after {
-            height: 100%;
-            transition: 0.2s;
-        }
-
-        .wrap-input-9 .input:focus ~ .focus-border i:after {
-            transition-delay: 0.4s;
-        }
-    </style>
 </head>
 
 <body>
-    <div data-aos="zoom-in" class="container">
-        <section>
-            <header class="title">Login</header>
-            <form id="login-form" class="form" action="/sign_in" method="POST">
-                <div class="field">
-                    <label class="label required-field">Alamat Email</label>
-                    <div class="control">
-                        <div class="wrap-input-9">
-                            <input class="input" type="email" name="email" placeholder="Masukan Email">
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
-                        </div>
-                    </div>
-                    <p class="help is-danger">Alamat Email yang valid wajib diisi</p>
-                </div>
-    
-                <div class="field">
-                    <label class="label required-field">Kata Sandi</label>
-                    <div class="control">
-                        <div class="wrap-input-9">
-                            <input class="input" type="password" name="password" id="password" placeholder="Masukan Kata Sandi">
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
-                        </div>
-                    </div>
-                    <p class="help is-danger">Kata Sandi wajib diisi</p>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" id="togglePassword"> Tampilkan Kata Sandi
-                        </label>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <!-- Pembanagan Animasi Button -->
-                        <button type="submit" onclick="sign_in()" class="button" style="background-color: #008CFF;">Login</button>
-                    </div>
-                </div>
-                <div class="field">
-                    <p class="compact">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
-                    <p class="compact">Back to <a href="{{ url_for('home') }}">Home</a></p>
-                </div>
-            </form>
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </section>
+    <div class="spinner-overlay hidden" id="loading-spinner">
+        <dotlottie-player src="https://lottie.host/ecc98912-6550-4a1b-8622-df5acef885fd/xcW4L0NEca.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
     </div>
+
+    <section class="container" data-aos="zoom-in" data-aos-duration="500" id="main-content">
+        <header class="title">Login</header>
+        <form id="login-form" class="form" action="/sign_in" method="POST">
+            <div class="field">
+                <label class="label required-field">Alamat Email</label>
+                <div class="control">
+                    <div class="wrap-input-9">
+                        <input class="input" type="email" name="email" placeholder="Masukan Email">
+                        <span class="focus-border">
+                            <i></i>
+                        </span>
+                    </div>
+                </div>
+                <p class="help is-danger">Alamat Email yang valid wajib diisi</p>
+            </div>
+
+            <div class="field">
+                <label class="label required-field">Kata Sandi</label>
+                <div class="control">
+                    <div class="wrap-input-9">
+                        <input class="input" type="password" name="password" id="password" placeholder="Masukan Kata Sandi">
+                        <span class="focus-border">
+                            <i></i>
+                        </span>
+                    </div>
+                </div>
+                <p class="help is-danger">Kata Sandi wajib diisi</p>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" id="togglePassword"> Tampilkan Kata Sandi
+                    </label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="g-recaptcha" data-sitekey="6LcoD0MpAAAAALnm2TQ4LhpP4zRWFwao_MMKLg1u"></div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <!-- Pembanagan Animasi Button -->
+                    <button type="submit" onclick="sign_in()" class="button is-primary">Login</button>
+                </div>
+            </div>
+            <div class="field">
+                <p class="compact">Lupa kata sandi? <a href="{{ url_for('forget_password') }}">Klik di sini</a></p>
+                <p class="compact">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
+                <p class="compact">Back to <a href="{{ url_for('home') }}">Home</a></p>
+            </div>
+        </form>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#togglePassword').on('change', function () {
@@ -213,15 +87,15 @@
                 const type = $(this).is(':checked') ? 'text' : 'password';
                 passwordField.attr('type', type);
             });
-
+    
             $('#login-form').on('submit', function (event) {
                 event.preventDefault();
                 let isValid = true;
-
+    
                 $('input').each(function () {
                     let $input = $(this);
                     let $helpText = $input.closest('.field').find('.help.is-danger');
-
+    
                     if ($input.val().trim() === '') {
                         $helpText.show();
                         isValid = false;
@@ -229,47 +103,70 @@
                         $helpText.hide();
                     }
                 });
-
+    
                 if (isValid) {
-                    $('.spinner-border').show(); // Show the spinner
-                    $('.button.is-primary').prop('disabled', true); // Disable the submit button
-
+                    $('#loading-spinner').removeClass('hidden');
+                    $('#main-content').addClass('blurred');
+                    $('.button.is-primary').prop('disabled', true);
+    
                     let email = $('#login-form input[name="email"]').val();
                     let password = $('#login-form input[name="password"]').val();
-
+                    let recaptcha = grecaptcha.getResponse();
+    
+                    if (recaptcha === "") {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'reCAPTCHA harus diisi.',
+                        });
+                        $('#loading-spinner').addClass('hidden'); 
+                        $('#main-content').removeClass('blurred'); 
+                        $('.button.is-primary').prop('disabled', false);
+                        return;
+                    }
+    
                     $.ajax({
                         type: 'POST',
                         url: '/sign_in',
                         data: {
                             email: email,
-                            password: password
+                            password: password,
+                            'g-recaptcha-response': recaptcha
                         },
                         success: function (response) {
                             if (response.result === 'success') {
                                 window.location.href = '/user/index';
+                            } else if (response.result === 'unverified') {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Akun belum diverifikasi',
+                                    text: 'Silakan periksa email Anda untuk verifikasi akun.',
+                                });
+                                $('#loading-spinner').addClass('hidden');
+                                $('#main-content').removeClass('blurred'); 
+                                $('.button.is-primary').prop('disabled', false);
                             } else {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
                                     text: response.msg,
                                 });
-                                $('.spinner-border').hide(); // Hide the spinner
-                                $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                                $('#loading-spinner').addClass('hidden');
+                                $('#main-content').removeClass('blurred');
+                                $('.button.is-primary').prop('disabled', false);
                             }
                         },
                         error: function (xhr, textStatus, errorThrown) {
                             alert('Error: ' + textStatus);
-                            $('.spinner-border').hide(); // Hide the spinner
-                            $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                            $('#loading-spinner').addClass('hidden');
+                            $('#main-content').removeClass('blurred');
+                            $('.button.is-primary').prop('disabled', false);
                         }
                     });
                 }
             });
+            AOS.init();
         });
-    </script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-      AOS.init();
     </script>
 </body>
 

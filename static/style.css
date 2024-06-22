@@ -21,9 +21,8 @@ body {
   background: #fff;
   padding: 25px;
   border-radius: 8px;
-  box-shadow: 0 0 15px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.1);
 }
-
 .container header {
   font-size: 1.5rem;
   color: #333;
@@ -80,6 +79,7 @@ body {
 .gender input {
   accent-color: rgb(130, 106, 251);
 }
+
 .form :where(.gender input, .gender label) {
   cursor: pointer;
 }

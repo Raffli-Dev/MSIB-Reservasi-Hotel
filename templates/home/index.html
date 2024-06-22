@@ -214,8 +214,11 @@
                                         <div class="user-img" style="background-image: url({{ review['profile_picture_url'] }})"></div>
                                         <div class="pos ml-3">
                                             <p class="name">
-                                                {{ review['full_name'].split()[0][0] }}{{ '*' * (review['full_name'].split()[0]|length - 1) }}
-                                                {{ review['full_name'].split()[1][0] }}{{ '*' * (review['full_name'].split()[1]|length - 1) }}
+                                                {% set name_parts = review['full_name'].split() %}
+                                                {{ name_parts[0][0] }}{{ '*' * (name_parts[0]|length - 1) }}
+                                                {% if name_parts|length > 1 %}
+                                                    {{ name_parts[1][0] }}{{ '*' * (name_parts[1]|length - 1) }}
+                                                {% endif %}
                                             </p>
                                             <span class="position" style="color: #555;">{{ review['tipe_kamar'] }}</span>
                                         </div>

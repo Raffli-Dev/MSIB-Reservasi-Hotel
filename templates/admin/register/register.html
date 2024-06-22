@@ -9,52 +9,17 @@
     <meta property="og:image" content="{{ url_for('static', filename='img/image-hotel/foto-depan-hotel.jpg') }}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="../static/style.css">
-    <style>
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-        
-        @media (min-width: 768px) {
-            .container {
-                width: 75%;
-                margin: 0 12.5%;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .container {
-                width: 50%;
-                margin: 0 25%;
-            }
-        }
-        
-        .required-field::after {
-            content: " *";
-            color: red;
-        }
-        
-        .help.is-danger {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .field label {
-                font-size: 0.9em;
-            }
-        
-            .field input, 
-            .field select, 
-            .field button {
-                font-size: 0.9em;
-            }
-        } 
-    </style>
+    <link rel="stylesheet" href="../../static/style/register.css">
+    <link rel="stylesheet" href="../../static/style/login.css">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
 </head>
 <body>
-    <section class="container">
+    <div class="spinner-overlay hidden" id="loading-spinner">
+        <dotlottie-player src="https://lottie.host/ecc98912-6550-4a1b-8622-df5acef885fd/xcW4L0NEca.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+    </div>
+    <section class="container" data-aos="zoom-in" data-aos-duration="500">
         <header class="title">Register Admin</header>
 
         <!-- Flash Messages -->
@@ -121,6 +86,8 @@
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#registration-form').on('submit', function (event) {
@@ -161,6 +128,10 @@
                 }
 
                 if (isValid) {
+                    $('#loading-spinner').addClass('hidden'); // Hide the Lottie animation
+                    $('#main-content').removeClass('blurred');
+                    $('.button.is-primary').prop('disabled', true); // Disable the submit button
+
                     $.ajax({
                         type: 'POST',
                         url: '/admin/register',
@@ -177,12 +148,15 @@
                         },
                         error: function (xhr, textStatus, errorThrown) {
                             const errorMessage = xhr.responseJSON.error;
+                            $('#loading-spinner').addClass('hidden');
+                            $('#main-content').removeClass('blurred');
                             $('#flash-message-content').text(errorMessage);
                             $('#flash-messages').show();
                         }
                     });
                 }
             });
+            AOS.init();
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
