@@ -13,11 +13,18 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/style.css">
     <link rel="stylesheet" href="../../static/style/login.css">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
 </head>
 
 <body>
-    <section class="container">
-        <header class="title">Formulir Login</header>
+    <div class="spinner-overlay hidden" id="loading-spinner">
+        <dotlottie-player src="https://lottie.host/ecc98912-6550-4a1b-8622-df5acef885fd/xcW4L0NEca.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+    </div>
+
+    <section class="container" data-aos="zoom-in" data-aos-duration="500" id="main-content">
+        <header class="title">Login</header>
         <form id="login-form" class="form" action="/sign_in" method="POST">
             <div class="field">
                 <label class="label required-field">Alamat Email</label>
@@ -61,18 +68,17 @@
                 </div>
             </div>
             <div class="field">
+                <p class="compact">Lupa kata sandi? <a href="{{ url_for('forget_password') }}">Klik di sini</a></p>
                 <p class="compact">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
                 <p class="compact">Back to <a href="{{ url_for('home') }}">Home</a></p>
             </div>
         </form>
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -99,8 +105,9 @@
                 });
     
                 if (isValid) {
-                    $('.spinner-border').show(); // Show the spinner
-                    $('.button.is-primary').prop('disabled', true); // Disable the submit button
+                    $('#loading-spinner').removeClass('hidden');
+                    $('#main-content').addClass('blurred');
+                    $('.button.is-primary').prop('disabled', true);
     
                     let email = $('#login-form input[name="email"]').val();
                     let password = $('#login-form input[name="password"]').val();
@@ -110,10 +117,11 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Please complete the reCAPTCHA.',
+                            text: 'reCAPTCHA harus diisi.',
                         });
-                        $('.spinner-border').hide(); // Hide the spinner
-                        $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                        $('#loading-spinner').addClass('hidden'); 
+                        $('#main-content').removeClass('blurred'); 
+                        $('.button.is-primary').prop('disabled', false);
                         return;
                     }
     
@@ -134,29 +142,32 @@
                                     title: 'Akun belum diverifikasi',
                                     text: 'Silakan periksa email Anda untuk verifikasi akun.',
                                 });
-                                $('.spinner-border').hide(); // Hide the spinner
-                                $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                                $('#loading-spinner').addClass('hidden');
+                                $('#main-content').removeClass('blurred'); 
+                                $('.button.is-primary').prop('disabled', false);
                             } else {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
                                     text: response.msg,
                                 });
-                                $('.spinner-border').hide(); // Hide the spinner
-                                $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                                $('#loading-spinner').addClass('hidden');
+                                $('#main-content').removeClass('blurred');
+                                $('.button.is-primary').prop('disabled', false);
                             }
                         },
                         error: function (xhr, textStatus, errorThrown) {
                             alert('Error: ' + textStatus);
-                            $('.spinner-border').hide(); // Hide the spinner
-                            $('.button.is-primary').prop('disabled', false); // Enable the submit button
+                            $('#loading-spinner').addClass('hidden');
+                            $('#main-content').removeClass('blurred');
+                            $('.button.is-primary').prop('disabled', false);
                         }
                     });
                 }
             });
+            AOS.init();
         });
     </script>
-    
 </body>
 
 </html>

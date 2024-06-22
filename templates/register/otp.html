@@ -12,9 +12,38 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/style.css">
     <link rel="stylesheet" href="../../static/style/login.css">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
+    <style>
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .spinner-overlay.hidden {
+            display: none;
+        }
+
+        .blurred {
+            filter: blur(5px);
+        }
+    </style>
 </head>
 <body>
-    <section class="container">
+    <div class="spinner-overlay hidden" id="loading-spinner">
+        <dotlottie-player src="https://lottie.host/ecc98912-6550-4a1b-8622-df5acef885fd/xcW4L0NEca.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+    </div>
+    <section class="container" data-aos="zoom-in" data-aos-duration="500" id="main-content">
         <header class="title">Verifikasi OTP</header>
         <form id="otp-form" class="form" method="POST">
             <div class="field">
@@ -38,9 +67,6 @@
                 </div>
                 <p class="help is-danger">Kode OTP wajib diisi</p>
             </div>
-            <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display: none;">
-                <span class="sr-only">Loading...</span>
-            </div>
             <div class="field">
                 <div class="control">
                     <button type="submit" class="button is-primary">Verifikasi</button>
@@ -55,12 +81,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#otp-form').on('submit', function(event) {
                 event.preventDefault();
-
-                $('#loading-spinner').show(); // Show the spinner
+                $('#loading-spinner').removeClass('hidden');
+                $('#main-content').addClass('blurred');
+                $('.button.is-primary').prop('disabled', true);
 
                 $.ajax({
                     type: 'POST',
@@ -77,7 +106,7 @@
                         });
                     },
                     error: function(xhr, textStatus, errorThrown) {
-                        const errorMessage = xhr.responseJSON.error;
+                        const errorMessage = xhr.responseJSON ? xhr.responseJSON.error : "Terjadi kesalahan, silakan coba lagi.";
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -85,10 +114,13 @@
                         });
                     },
                     complete: function() {
-                        $('#loading-spinner').hide(); // Hide the spinner
+                        $('#loading-spinner').addClass('hidden');
+                        $('#main-content').removeClass('blurred');
+                        $('.button.is-primary').prop('disabled', false);
                     }
                 });
             });
+            AOS.init();
         });
     </script>
 </body>

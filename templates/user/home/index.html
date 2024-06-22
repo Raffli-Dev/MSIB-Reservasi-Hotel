@@ -310,7 +310,7 @@
             var roomType = document.getElementById('room').value;
             
             if (checkinDate) {
-                window.location.href = '/book?check_in_date=' + checkinDate + '&room=' + roomType;
+                window.location.href = '/user/book?check_in_date=' + checkinDate + '&room=' + roomType;
             } else {
                 Swal.fire({
                     title: 'Error!',
