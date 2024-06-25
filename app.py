@@ -2254,4 +2254,4 @@ def error_admin():
     return render_template('error_page/error_setting.html', message="Registrasi admin dinonaktifkan")
 
 if __name__ == '__main__':
-    app.run("0.0.0.0", port=5000, debug=True)
+    app.run(port=5000, debug=True)
