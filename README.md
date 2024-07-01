@@ -10,7 +10,7 @@ Windows :
 
 ./venv/Script/activate
 
-Linux :
+Linux & MacOS :
 
 source /venv/Script/activate
 
