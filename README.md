@@ -5,21 +5,22 @@
 Link URL : https://hoteltelagamas.glitch.me
 
 # Instalasi 
-
+```bash
 python -m venv venv
-
+```
 Windows : 
-
+```bash
 ./venv/Script/activate
-
+```
 Linux & MacOS :
-
+```bash
 source /venv/Script/activate
-
-
+```
+#### Langkah kedua
+```bash
 pip install -r requirements.txt
-
-running???
+```
+#### running???
 
 python app.py
 
