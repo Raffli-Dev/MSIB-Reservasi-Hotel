@@ -6,7 +6,11 @@ Link URL : https://hoteltelagamas.glitch.me
 
 # Instalasi 
 ```bash
+For Windows :
 python -m venv venv
+
+For Linux :
+python3 -m venv venv
 ```
 Windows : 
 ```bash
