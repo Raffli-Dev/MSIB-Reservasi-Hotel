@@ -1,3 +1,5 @@
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+
 # Note untuk menjalankan app.py menggunakan localhost:5000
 
 Link URL : https://hoteltelagamas.glitch.me
