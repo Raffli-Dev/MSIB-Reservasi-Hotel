@@ -21,7 +21,9 @@ source /venv/Script/activate
 pip install -r requirements.txt
 ```
 #### running???
-
+```bash
 python app.py
-
+```
+```bash
 localhost:5000
+```
