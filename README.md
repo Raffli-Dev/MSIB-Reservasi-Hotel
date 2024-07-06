@@ -3,9 +3,8 @@
 [![JSDelivr CDN](https://data.jsdelivr.com/v1/package/gh/<USERNAME>/<REPOSITORY>/badge?style=rounded)](https://www.jsdelivr.com/package/gh/<USERNAME>/<REPOSITORY>) 
      [![Bash Shell](https://badges.frapsoft.com/bash/v1/bash.png?v=103)](https://github.com/ellerbrock/open-source-badges/)      [![made-for-VSCode](https://img.shields.io/badge/Made%20for-VSCode-1f425f.svg)](https://code.visualstudio.com/)
 
-<br>
-<img align="right" alt="laptop" width="300" height="212" src="https://static.wikia.nocookie.net/blue-archive/images/a/af/Shiroko_Live2D.gif/revision/latest/scale-to-width-down/300?cb=20210209063659">
-<br>
+
+<img alt="laptop" width="300" height="212" src="https://static.wikia.nocookie.net/blue-archive/images/a/af/Shiroko_Live2D.gif/revision/latest/scale-to-width-down/300?cb=20210209063659">
 
 # Note untuk Proses Instalasi Sebagai Berikut : 
 
